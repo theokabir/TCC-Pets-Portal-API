@@ -1,0 +1,20 @@
+{
+  "name": "tccpetsportal",
+  "version": "1.0.0",
+  "description": "back-end do projeto Pet's Portal, TCC para a organização ETEC da Zona Leste",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Theo Kabir",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.3"
+  }
+}

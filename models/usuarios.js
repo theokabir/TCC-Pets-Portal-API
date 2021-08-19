@@ -20,7 +20,7 @@ const usuarioSchema = new Schema({
     },
 
     tel1: {
-        Type: Number,
+        type: Number,
         required: true
     },
 
@@ -52,4 +52,4 @@ const usuarioSchema = new Schema({
 
 })
 
-mongoose.model("usuarios", UsuarioSchema)
+mongoose.model("usuarios", usuarioSchema)

@@ -4,10 +4,14 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const config = require('./config/config.json')
 
 //variaveis
 const app = express()
 const port = process.env.PORT || 3000
+
+//rotas
+const userRouter = require('./routes/usuario')
 
 //configurações
 app.use(cors())
@@ -15,18 +19,18 @@ app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use((req, res, next)=>{
-    app.header("Access-Control-Allow-Origin", "*")
-    app.header("Acess.Control-Allow-Header",
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Acess.Control-Allow-Header",
     "Accept, Authorization, X-Requested-With, Origin, Content-Type")
 
     if(req.method==="OPTIONS")
-        app.header("Acess-Control-Allow-Methods", "GET, POST, DELETE, PATCH")
+        res.header("Acess-Control-Allow-Methods", "GET, POST, DELETE, PATCH")
 
     next()
 })
 
 //banco de dados
-mongoose.connect('mongodb://localhost/petsportal', {
+mongoose.connect(config.mongoRoute, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -40,6 +44,8 @@ mongoose.connect('mongodb://localhost/petsportal', {
 
 //rotas
 //externas
+app.use("/user", userRouter)
+
 //raiz
 app.get("/", (req, res)=>{
     res.status(200).send({

@@ -9,12 +9,17 @@ const usuarioSchema = new Schema({
         required: true
     },
 
-    endereco: {
+    email: {
         type: String,
         required: true
     },
 
-    email: {
+    senha: {
+        type: String,
+        required: true
+    },
+
+    endereco: {
         type: String,
         required: true
     },

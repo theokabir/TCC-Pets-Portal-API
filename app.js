@@ -11,7 +11,7 @@ const app = express()
 const port = process.env.PORT || 3000
 
 //rotas
-const userRouter = require('./routes/usuario')
+const userRouter = require('./routes/usuario/usuario')
 
 //configurações
 app.use(cors())

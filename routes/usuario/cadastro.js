@@ -1,6 +1,6 @@
 /*
 
-    rota: site/user/cadastrar
+    rota: api/user/cadastrar
 
 */
 

@@ -1,6 +1,6 @@
 /*
 
-    rota: site/user
+    rota: api/user
 
 */
 //dependencias

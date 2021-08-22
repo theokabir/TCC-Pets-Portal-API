@@ -1,30 +1,21 @@
-const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 require('./../models/usuarios')
 const Usuarios = mongoose.model('usuarios')
 
-// * hash utilizando bcrypt
-const hashSenha = senha => {
-    bcrypt.hash(senha, 10, (errBcrypt, hash)=>{
-        if(errBcrypt){
-            return false
-        }
-        else{
-            return hash
-        }
-    })
-}
-
 // * verificação de pessoas físicas
-const verificacaoPessoaFisica = data => {
+exports.verificacaoPessoaFisica = data => {
+
     if (
+        // * verificações de dados
+        // TODO: revisar verificações com o pessoal
         data.nome &&
         data.email &&
         data.senha &&
         data.endereco &&
         data.tel1 &&
         data.nasc &&
-        data.cpf
+        data.cpf &&
+        data.senha === data.senha2
     ){
 
         Usuarios.findOne({email: data.email})

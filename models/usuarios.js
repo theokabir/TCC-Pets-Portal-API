@@ -11,7 +11,8 @@ const usuarioSchema = new Schema({
 
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
 
     senha: {
@@ -26,12 +27,14 @@ const usuarioSchema = new Schema({
 
     tel1: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
 
     tel2: {
         type: Number,
-        required: false
+        required: false,
+        unique: true
     },
 
     imagem: {

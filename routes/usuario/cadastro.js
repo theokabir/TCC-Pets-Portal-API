@@ -11,8 +11,39 @@ const mongoose = require('mongoose')
 const router = express.Router()
 
 //mongoose models
-require('../models/usuarios')
+require('./../../models/usuarios')
 const Usuarios = mongoose.model('usuarios')
+
+//funções de verificação
+const verificacaoPessoaFisica = (data) => {
+    if (
+        data.nome &&
+        data.email &&
+        data.senha &&
+        data.endereco &&
+        data.tel1 &&
+        data.nasc &&
+        data.cpf
+    ){
+
+        Usuarios.findOne({email: data.email})
+        .then(user => {
+            if(user){
+                return "Usuário ja existente"
+            } 
+            else {
+                return true
+            }
+        })
+        .catch(err => {
+            return false
+        })
+
+    }else{
+        // TODO: revisar mensagem
+        return "Falta de dados obrigatórios"
+    }
+}
 
 //rotas
 //cadatrar pessoa física
@@ -29,49 +60,62 @@ router.post("/pessoaFisica", (req, res)=>{
         desc: req.body.desc
     }
 
-    Usuarios.findOne({email: dataUsuario.email})
-    .then(data => {
-        if(data){
-            console.log(`este email já está registrado`)
+    var ver = verificacaoPessoaFisica(dataUsuario)
 
-            res.status(401).send({
-                msg: "email já registrado"
+    if(ver){
+
+        if (typeof(ver) === String) {
+            // ?  "conflict"
+            res.status(409).send({
+                msg: ver
             })
-        }else{
+        }
+        else {
+            // * caso a verificação retorne true
+
             bcrypt.hash(dataUsuario.senha, 10, (errBcrypt, hash)=>{
                 if (errBcrypt){
+
+                    console.log("erro ao encriptar senha")
+
                     res.status(500).send({
                         msg: "erro ao encriptar senha"
                     })
                 }
-
+        
                 dataUsuario.senha = hash
-
+        
                 new Usuarios(dataUsuario).save()
                 .then(newUser => {
                     console.log(`novo usuário registrado:\n${newUser}`)
-
+        
                     res.status(200).send({
                         msg: "usuário criado com sucesso"
                     })
                 })
                 .catch(e => {
                     console.log(`erro ao criar usuário ${dataUsuario.email}::::${e}}`)
-
+        
                     res.status(500).send({
                         msg: "erro ao criar usuário"
                     })
                 })  
             })
+
         }
-    })
-    .catch(err => {
-        console.log(`erro ao procurar por dados:::::${err}`)
+
+
+    } 
+    else {
+
+        console.log("erro ao ")
 
         res.status(500).send({
-            msg: "erro ao encontrar dados"
+            // TODO: trocar mensagem
+            msg: "erro interno do servidor"
         })
-    })
+    }
+    
 
 
 })

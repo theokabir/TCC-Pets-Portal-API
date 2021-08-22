@@ -98,6 +98,9 @@ router.post("/pessoaFisica", (req, res)=>{
 
 })
 
+router.post('/ong', (req, res)=>{
+    // TODO: Rota de cacadstro de ong
+})
 
 //exportação
 module.exports = router

@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 require('./../models/usuarios')
 const Usuarios = mongoose.model('usuarios')
 

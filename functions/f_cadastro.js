@@ -1,3 +1,7 @@
+const bcrypt = require('bcrypt')
+require('./../models/usuarios')
+const Usuarios = mongoose.model('usuarios')
+
 // * hash utilizando bcrypt
 const hashSenha = senha => {
     bcrypt.hash(senha, 10, (errBcrypt, hash)=>{

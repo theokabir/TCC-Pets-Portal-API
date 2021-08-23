@@ -13,9 +13,10 @@ const router = express.Router()
 //mongoose models
 require('./../../models/usuarios')
 require('./../../models/usuarios_subSchemas/fisico')
-// require('./../../models/usuarios_subSchemas/ong')
+require('./../../models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
 const Fisico = mongoose.model('fisicos')
+const Ong = mongoose.model('ongs')
 
 const f = require('./../../functions/f_cadastro.js')
 
@@ -114,6 +115,83 @@ router.post("/pessoaFisica", (req, res)=>{
 
 router.post('/ong', (req, res)=>{
     // TODO: Rota de cacadstro de ong
+    var dataUsuario = {
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha,
+        senha2: req.body.senha2,
+        endereco: req.body.endereco,
+        tel1: req.body.tel1,
+        tel2: req.body.tel2,
+        estadoSocial: req.body.estsoci,
+        desc: req.body.desc
+    }
+
+    var ver = verificacaoOng(dataUsuario)
+
+    if (ver){
+        if (typeof(ver) === String){
+            res.status(500).send({
+                msg: ver
+            })
+        }else{
+
+            // * Sucesso na verificação
+
+            bcrypt.hash(data.senha, 10, (errBcrypt, hash) => {
+                if (errBcrypt){
+                    // TODO: Revisar codigo do protocolo HTTP
+                    res.status(500).send({
+                        msg: "Erro ao encriptar senha"
+                    })
+                }
+                else{
+
+                    dataUsuario.senha = hash
+                    dataUsuario.senha2 = undefined
+                    dataUsuario.tipo = "ong"
+
+                    new Ong(dataUsuario).save()
+                    .then(ong => {
+
+                        dataUsuario.ong = ong._id
+
+                        new Usuarios(dataUsuario).save()
+                        .then(user => {
+                            // ! remover log
+                            console.log(`Usuario registrado::::${user}`)
+                            
+                            // TODO: Revisar codigo do protocolo HTTP
+                            res.status(200).send({
+                                msg: "usuario criado com sucesso"
+                            })
+                        })
+                        .catch(e => {
+                            // TODO: Revisar codigo do protocolo HTTP
+                            res.status(500).send({
+                                msg: "Erro ao criar dado do usupario"
+                            })
+                        })
+
+                    })
+                    .catch(e => {
+                        // TODO: Revisar codigo do protocolo HTTP
+                        res.status(500).send({
+                            msg: "Erro ao criar dado do usupario"
+                        })
+                    })
+
+                }
+            })
+
+        }
+    }else{
+        // TODO: Revisar codigo do protocolo HTTP
+        res.status(500).send({
+            msg: "Erro ao verificar dados"
+        })
+    }
+
 })
 
 router.get('/find/:id', (req, res) => {
@@ -125,6 +203,10 @@ router.get('/find/:id', (req, res) => {
 		path: "fisico",
 		select: "-_id -__v -cpf"
 	})
+    .populate({
+        path: "ong",
+        select: "-_id -__v"
+    })
     .then(user => {
         console.log(`usuario listado:\n${user}`)
         res.status(200).send(user)

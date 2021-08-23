@@ -36,3 +36,32 @@ exports.verificacaoPessoaFisica = data => {
         return "Falta de dados obrigatórios"
     }
 }
+
+exports.verificacaoOng = data => {
+    if (
+        // * verificação dos dados da ong
+        data.nome &&
+        data.email &&
+        data.senha &&
+        data.endereco &&
+        data.tel1 &&
+        data.estadoSocial &&
+        data.desc &&
+        data.senha === data.senha2
+    ){
+        
+        Usuarios.findOne({email: data.email})
+        .then(user => {
+            if (user) return "Usuário ja registrado"
+            else return true
+        })
+        .catch(e => {
+            return false
+        })
+
+    }
+    else {
+        // TODO: revisar
+        return "Falta de dados nescessários"
+    }
+}

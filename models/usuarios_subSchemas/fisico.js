@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const fisicoSchema = new Schema({
-    nascimento: {
+    nasc: {
         type: Date,
         required: true
     },

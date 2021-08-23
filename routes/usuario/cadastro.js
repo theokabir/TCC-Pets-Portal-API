@@ -12,7 +12,10 @@ const router = express.Router()
 
 //mongoose models
 require('./../../models/usuarios')
+require('./../../models/usuarios_subSchemas/fisico')
+// require('./../../models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
+const Fisico = mongoose.model('fisicos')
 
 const f = require('./../../functions/f_cadastro.js')
 
@@ -63,22 +66,33 @@ router.post("/pessoaFisica", (req, res)=>{
                     
                     dataUsuario.senha = hash
                     dataUsuario.senha2 = undefined
-        
-                    new Usuarios(dataUsuario).save()
-                    .then(newUser => {
-                        console.log(`novo usuário registrado:\n${newUser}`)
 
-                        res.status(200).send({
-                            msg: "usuário criado com sucesso"
+                    new Fisico(dataUsuario).save()
+                    .then(newFisico => {
+                        dataUsuario.fisico = newFisico._id
+                        new Usuarios(dataUsuario).save()
+                        .then(newUser => {
+                            console.log(`novo usuário registrado:\n${newUser}`)
+
+                            res.status(200).send({
+                                msg: "usuário criado com sucesso"
+                            })
                         })
+                        .catch(e => {
+                            console.log(`erro ao criar usuário ${dataUsuario.email}::::${e}}`)
+
+                            res.status(500).send({
+                                msg: "erro ao criar usuário"
+                            })
+                        }) 
                     })
                     .catch(e => {
-                        console.log(`erro ao criar usuário ${dataUsuario.email}::::${e}}`)
+                        console.log(`erro ao criar usuário ${dataUsuario.email} pela tabela d epessoa física::::${e}}`)
 
                         res.status(500).send({
                             msg: "erro ao criar usuário"
                         })
-                    }) 
+                    })
                 }
             })
                 
@@ -100,6 +114,24 @@ router.post("/pessoaFisica", (req, res)=>{
 
 router.post('/ong', (req, res)=>{
     // TODO: Rota de cacadstro de ong
+})
+
+router.get('/find/:id', (req, res) => {
+    var id = req.params.id
+
+    Usuarios.findOne({_id: id})
+	.select("-senha -endereco -__v")
+    .populate({
+		path: "fisico",
+		select: "-_id -__v -cpf"
+	})
+    .then(user => {
+        console.log(`usuario listado:\n${user}`)
+        res.status(200).send(user)
+    })
+    .catch(err => {
+        res.status(200).send({})
+    })
 })
 
 //exportação

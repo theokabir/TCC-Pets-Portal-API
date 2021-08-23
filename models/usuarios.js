@@ -17,12 +17,14 @@ const usuarioSchema = new Schema({
 
     senha: {
         type: String,
-        required: true
+        required: true,
+        selec: false
     },
 
     endereco: {
         type: String,
-        required: true
+        required: true,
+        selection: false
     },
 
     tel1: {

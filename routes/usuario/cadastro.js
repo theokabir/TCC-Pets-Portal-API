@@ -8,6 +8,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const upload = require('./../../middlewares/upload')
 const router = express.Router()
 
 //mongoose models
@@ -17,8 +18,6 @@ require('./../../models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
 const Fisico = mongoose.model('fisicos')
 const Ong = mongoose.model('ongs')
-
-const f = require('./../../functions/f_cadastro.js')
 
 router.post('/', (req, res)=>{
     console.log(f.verificacaoPessoaFisica("djfgdgf"))
@@ -42,70 +41,95 @@ router.post("/pessoaFisica", (req, res)=>{
         desc: req.body.desc
     }
 
-    var ver = f.verificacaoPessoaFisica(dataUsuario)
+    if (
+        // * verificação dos dados da ong
+        dataUsuario.nome &&
+        dataUsuario.email &&
+        dataUsuario.senha &&
+        dataUsuario.endereco &&
+        dataUsuario.tel1 &&
+        dataUsuario.desc &&
+        dataUsuario.senha === dataUsuario.senha2
+    ){
 
-    if(ver != false){
+        Usuarios.find().or([
+            {email: dataUsuario.email},
+            {tel1: dataUsuario.tel1},
+            {tel2: dataUsuario.tel2}
+        ])
+        .then(user => {
 
-        if (typeof(ver) === String) {
-            // ?  "conflict"
-            res.status(409).send({
-                msg: ver
-            })
-        }
-        else {
-            // * caso a verificação retorne true
+            if(user.lenght > 0){
+                console.log(`Usuário já registrado::::\n${user}`)
 
-            bcrypt.hash(dataUsuario.senha, 10, (errBcrypt, hash)=>{
-                if(errBcrypt){
-                    console.log("erro ao encriptar senha")
-    
-                    res.status(500).send({
-                        msg: "erro ao encriptar senha"
-                    })
-                }
-                else{
-                    
-                    dataUsuario.senha = hash
-                    dataUsuario.senha2 = undefined
+                res.status(500).send({
+                    msg: "Email ou telefone já existente"
+                })
+            }   
+            else{
 
-                    new Fisico(dataUsuario).save()
-                    .then(newFisico => {
-                        dataUsuario.fisico = newFisico._id
-                        new Usuarios(dataUsuario).save()
-                        .then(newUser => {
-                            console.log(`novo usuário registrado:\n${newUser}`)
-
-                            res.status(200).send({
-                                msg: "usuário criado com sucesso"
-                            })
-                        })
-                        .catch(e => {
-                            console.log(`erro ao criar usuário ${dataUsuario.email}::::${e}}`)
-
-                            res.status(500).send({
-                                msg: "erro ao criar usuário"
-                            })
-                        }) 
-                    })
-                    .catch(e => {
-                        console.log(`erro ao criar usuário ${dataUsuario.email} pela tabela d epessoa física::::${e}}`)
+                bcrypt.hash(dataUsuario.senha, 10, (errBcrypt, hash) => {
+                    if (errBcrypt){
+                        console.log("Erro ao encriptar senha")
 
                         res.status(500).send({
-                            msg: "erro ao criar usuário"
+                            msg: "Erro ao encriptar dados"
                         })
-                    })
-                }
-            })
-                
-        }
-    } 
-    else {
+                    }
+                    else{
 
-        console.log(`erro: ${ver}`)
+                        dataUsuario.senha = hash
+
+                        new Fisico(dataUsuario).save()
+                        .then(newPessoaFisica=> {
+
+                            dataUsuario.fisico = newPessoaFisica._id
+
+                            new Usuarios(dataUsuario).save()
+                            .then(newPessoa => {
+                                console.log(`Novo usuário criado::::\n${newPessoa}`)
+
+                                res.status(200).send({
+                                    msg: "Novo usuário criado"
+                                })
+                            })
+                            .catch(e => {
+                                console.log(`Erro ao criar dado do usuário:::::\n${e}`)
+
+                                res.status(500).send({
+                                    msg: "Erro ao criar dado do usuário"
+                                })
+                            })
+
+                        })
+                        .catch(e => {
+                            console.log(`Erro ao criar dado de pesssoa física::::\n${e}`)
+
+                            res.status(500).send({
+                                msg: "erro ao criar usuário de pessoa física"
+                            })
+                        })
+
+                    }
+                })
+
+            }
+
+        })
+        .catch(e => {
+            console.log(`Erro ao verificar existencia de usuário:::\n${e}`)
+
+            res.status(500).send({
+                msg: "Erro ao encontrar usuário já existente"
+            })
+        })
+
+    }
+    else{
+        console.log("Eroo na verificação dos dados")
 
         res.status(500).send({
-            // TODO: trocar mensagem
-            msg: "erro interno do servidor"
+            msg: "Erro na verificação de dados"
         })
     }
     
@@ -113,7 +137,7 @@ router.post("/pessoaFisica", (req, res)=>{
 
 })
 
-router.post('/ong', (req, res)=>{
+router.post('/ong', upload.single('img'), (req, res)=>{
     // TODO: Rota de cacadstro de ong
     var dataUsuario = {
         nome: req.body.nome,
@@ -123,74 +147,106 @@ router.post('/ong', (req, res)=>{
         endereco: req.body.endereco,
         tel1: req.body.tel1,
         tel2: req.body.tel2,
-        estadoSocial: req.body.estsoci,
         desc: req.body.desc
     }
 
-    var ver = verificacaoOng(dataUsuario)
+    console.log(`data: ${JSON.stringify(dataUsuario, null, "\t")}\nfile${JSON.stringify(req.file, null, "\t")}`)
 
-    if (ver){
-        if (typeof(ver) === String){
-            res.status(500).send({
-                msg: ver
-            })
-        }else{
+    if (
+        // * verificação dos dados da ong
+        dataUsuario.nome &&
+        dataUsuario.email &&
+        dataUsuario.senha &&
+        dataUsuario.endereco &&
+        dataUsuario.tel1 &&
+        dataUsuario.desc && 
+        dataUsuario.senha === dataUsuario.senha2 &&
+        req.file 
+        ){
 
-            // * Sucesso na verificação
+        dataUsuario.estadoSocial = req.file.path
 
-            bcrypt.hash(data.senha, 10, (errBcrypt, hash) => {
-                if (errBcrypt){
-                    // TODO: Revisar codigo do protocolo HTTP
-                    res.status(500).send({
-                        msg: "Erro ao encriptar senha"
-                    })
-                }
-                else{
+        // TODO: verificação de telefones repetidos
+        Usuarios.find().or([
+            {email: dataUsuario.email},
+            {tel1: dataUsuario.tel1},
+            {tel2: dataUsuario.tel2}
+        ])
+        .then(user => {
 
-                    dataUsuario.senha = hash
-                    dataUsuario.senha2 = undefined
-                    dataUsuario.tipo = "ong"
+            if(user.length > 0){
+                console.log(`Usuário já registrado:: ${user}`)
 
-                    new Ong(dataUsuario).save()
-                    .then(ong => {
+                res.status(401).send({
+                    msg: "Usuário já registrado com esse email"
+                })
+            }
+            else{
+                // * sucesso na verificação dos dados
 
-                        dataUsuario.ong = ong._id
+                bcrypt.hash(dataUsuario.senha, 10, (errBcrypt, hash) => {
+                    if (errBcrypt) {
+                        res.status(500).send({
+                            msg: "Erro ao encriptar dados"
+                        })
+                    }
+                    else{
 
-                        new Usuarios(dataUsuario).save()
-                        .then(user => {
-                            // ! remover log
-                            console.log(`Usuario registrado::::${user}`)
-                            
-                            // TODO: Revisar codigo do protocolo HTTP
-                            res.status(200).send({
-                                msg: "usuario criado com sucesso"
+                        dataUsuario.senha = hash
+
+                        new Ong(dataUsuario).save()
+                        .then(ong => {
+                            dataUsuario.tipo = "ong"
+                            dataUsuario.ong = ong._id
+        
+                            new Usuarios(dataUsuario).save()
+                            .then(newUser => {
+        
+                                // * sucesso na criação do usuário ONG
+                                console.log(`Novo usuário criado::::${newUser}`)
+        
+                                res.status(200).send({
+                                    msg: "usuário criado com sucesso"
+                                })
+        
                             })
+                            .catch(e => {
+                                console.log(`Erro na criação do dado do usuário:::\n${e}`)
+        
+                                res.status(500).send({
+                                    msg: "Erro na criação do dado do novo usuário"
+                                })
+                            })
+        
                         })
                         .catch(e => {
-                            // TODO: Revisar codigo do protocolo HTTP
+                            console.log(`Erro ao criar dado da ONG::\n${e}`)
+        
                             res.status(500).send({
-                                msg: "Erro ao criar dado do usupario"
+                                msg: "erro ao criar dado da ong"
                             })
                         })
+                    }
+                })
+            }
+        })
+        .catch(e => {
+            console.log(`Erro ao encontrar usuários com o mesmo email:::\n${e}`)
 
-                    })
-                    .catch(e => {
-                        // TODO: Revisar codigo do protocolo HTTP
-                        res.status(500).send({
-                            msg: "Erro ao criar dado do usupario"
-                        })
-                    })
-
-                }
+            res.status(500).send({
+                msg: "Erro ao encontrar usuários com o mesmo email"
             })
+        })
+    
+    }
+    else{
+        console.log("erro na verificação dos dados")
 
-        }
-    }else{
-        // TODO: Revisar codigo do protocolo HTTP
         res.status(500).send({
-            msg: "Erro ao verificar dados"
+            msg: "erro ao verificar dados"
         })
     }
+            
 
 })
 
@@ -212,7 +268,7 @@ router.get('/find/:id', (req, res) => {
         res.status(200).send(user)
     })
     .catch(err => {
-        res.status(200).send({})
+        res.status(200).send({msg: err})
     })
 })
 

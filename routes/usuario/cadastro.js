@@ -20,9 +20,7 @@ const Fisico = mongoose.model('fisicos')
 const Ong = mongoose.model('ongs')
 
 router.post('/', (req, res)=>{
-    console.log(f.verificacaoPessoaFisica("djfgdgf"))
-
-    res.send({})
+    res.sendd({msg: "ok"})
 })
 
 //rotas

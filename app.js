@@ -1,6 +1,7 @@
 //arquivo principal 
 //importações
 const express = require('express')
+const formidable = require('express-formidable')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -16,8 +17,9 @@ const userRouter = require('./routes/usuario/usuario')
 //configurações
 app.use(cors())
 app.use(morgan('dev'))
-app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+//app.use(formidable())
 app.use('/uploads', express.static(__dirname + "/uploads"))
 app.use((req, res, next)=>{
     res.header("Access-Control-Allow-Origin", "*")

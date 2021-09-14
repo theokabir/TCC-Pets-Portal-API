@@ -11,6 +11,10 @@ const ongSchema = Schema({
     estadoSocial: {
         type: String,
         required: true
+    },
+    verificado: {
+        type: Boolean,
+        default: false
     }
 
 })

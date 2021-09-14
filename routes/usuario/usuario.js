@@ -5,9 +5,9 @@
 */
 //dependencias
 const express = require('express')
-const mongoose = require('mongoose')
 const router = express.Router()
 const cadastrarRouter = require('./cadastro')
+const loginRouter = require('./login')
 
 //rotas
 //raiz
@@ -19,6 +19,7 @@ router.get("/", (req, res)=>{
 
 //cadatrar pessoa física
 router.use('/cadastrar', cadastrarRouter)
+router.use('/login', loginRouter)
 
 
 //exportação

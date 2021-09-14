@@ -1,7 +1,6 @@
 //arquivo principal 
 //importações
 const express = require('express')
-const formidable = require('express-formidable')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')

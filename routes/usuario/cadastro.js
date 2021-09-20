@@ -8,7 +8,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const upload = require('./../../middlewares/upload')
+const uploadOng = require('./../../middlewares/uploadOng')
 const router = express.Router()
 
 //mongoose models
@@ -107,7 +107,7 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
 
 })
 
-router.post('/ong', upload.single('img'), verifOng,(req, res)=>{
+router.post('/ong', uploadOng.single('social'), verifOng,(req, res)=>{
 
     req.newUser.estadoSocial = req.file.path
     Usuarios.find().or([

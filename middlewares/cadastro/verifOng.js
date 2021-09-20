@@ -12,8 +12,6 @@ const verifOng = (req, res, next) => {
     desc: req.body.desc
   }
 
-  console.log(req.body)
-
   if (
     // * verificação dos dados da ong
     dataUsuario.nome &&
@@ -26,6 +24,7 @@ const verifOng = (req, res, next) => {
     req.file
     )
   {
+
 
     if (dataUsuario.senha !== dataUsuario.senha2)
       res.status(401).send({

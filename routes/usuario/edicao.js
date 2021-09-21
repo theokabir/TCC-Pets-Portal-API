@@ -41,68 +41,68 @@ router.post('/pessoaFisica', (req, res) => {
     if(user.tipo === "ong"){
       console.log(`entrada de ong na edição de pessoa física`)
       res.status(401).send({
-        msg: "está rota é apenas para edição de usuário do tipo \"Pessoa Física\""
+        msg: "está rota é apenas para edição de usuário do tipo 'Pessoa Física'"
+      })
+    }else{
+      Fisicos.findOne({_id: user.fisico})
+      .then(fis => {
+  
+        // * Dados consultados com sucesso
+        if (userData.nome) user.nome = userData.nome
+        if (userData.email) user.email = userData.email
+        if (userData.endereco) user.endereco = userData.endereco
+        if (userData.tel1) user.tel1 = userData.tel1
+        if (userData.tel2) user.tel2 = userData.tel2
+        
+        user.save()
+        .then(newUser => {
+  
+          console.log(`usuário editado\n${newUser}`)
+  
+          if (userData.cpf) fis.cpf = userData.cpf
+          if (userData.nasc) fis.nasc = userData.nasc
+          if (userData.desc) fis.desc = userData.desc
+  
+          fis.save()
+          .then(newFis => {
+  
+            // * atualizaçãoc completa
+  
+            console.log(`dados de pessoa física atualizado\n${newFis}`)
+  
+            res.status(200).send({
+              msg: "dados alterados com sucesso"
+            })
+  
+          })
+          .catch (e => {
+            console.log(`erro ao salvar novos dados de pessoa física:::${e}`)
+  
+            res.status(500).send({
+              msg: "erro ao salvar novos dados de pessoa física"
+            })
+          })
+  
+        })
+        .catch( e => {
+          console.log(`erro eo editar Usuario\nerro:::${e}`)
+  
+          res.status(500).send({
+            msg: "erro ao editar usuário"
+          })
+  
+        })
+  
+  
+      })
+      .catch(e => {
+        console.log(`erro ao encontrrar dados de pessoa física com o id:${user.fisico}\nerro:::${e}`)
+  
+        res.status(500).send({
+          msg: "erro ao encontrar dados de pessoa física"
+        })
       })
     }
-    
-    Fisicos.findOne({_id: user.fisico})
-    .then(fis => {
-
-      // * Dados consultados com sucesso
-      if (userData.nome) user.nome = userData.nome
-      if (userData.email) user.email = userData.email
-      if (userData.endereco) user.endereco = userData.endereco
-      if (userData.tel1) user.tel1 = userData.tel1
-      if (userData.tel2) user.tel2 = userData.tel2
-      
-      user.save()
-      .then(newUser => {
-
-        console.log(`usuário editado\n${newUser}`)
-
-        if (userData.cpf) fis.cpf = userData.cpf
-        if (userData.nasc) fis.nasc = userData.nasc
-        if (userData.desc) fis.desc = userData.desc
-
-        fis.save()
-        .then(newFis => {
-
-          // * atualizaçãoc completa
-
-          console.log(`dados de pessoa física atualizado\n${newFis}`)
-
-          res.status(200).send({
-            msg: "dados alterados com sucesso"
-          })
-
-        })
-        .catch (e => {
-          console.log(`erro ao salvar novos dados de pessoa física:::${e}`)
-
-          res.status(500).send({
-            msg: "erro ao salvar novos dados de pessoa física"
-          })
-        })
-
-      })
-      .catch( e => {
-        console.log(`erro eo editar Usuario\nerro:::${e}`)
-
-        res.status(500).send({
-          msg: "erro ao editar usuário"
-        })
-
-      })
-
-
-    })
-    .catch(e => {
-      console.log(`erro ao encontrrar dados de pessoa física com o id:${user.fisico}\nerro:::${e}`)
-
-      res.status(500).send({
-        msg: "erro ao encontrar dados de pessoa física"
-      })
-    })
 
   })
   .catch( e => {
@@ -113,6 +113,7 @@ router.post('/pessoaFisica', (req, res) => {
       msg: "erro ao encontrar usuário com tal id"
     })
   })
+    
 
 })
 

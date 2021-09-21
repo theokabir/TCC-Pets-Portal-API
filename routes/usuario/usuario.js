@@ -6,8 +6,12 @@
 //dependencias
 const express = require('express')
 const router = express.Router()
+
+//importando os arquivos de rotas
 const cadastrarRouter = require('./cadastro')
 const loginRouter = require('./login')
+const editRouter = require('./edicao')
+const readRouter = require('./requisutar')
 
 //rotas
 //raiz
@@ -18,8 +22,10 @@ router.get("/", (req, res)=>{
 })
 
 //cadatrar pessoa física
-router.use('/cadastrar', cadastrarRouter)
 router.use('/login', loginRouter)
+router.use('/cadastrar', cadastrarRouter)
+router.use('/edit', editRouter)
+router.use('/read', readRouter)
 
 
 //exportação

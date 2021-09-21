@@ -22,6 +22,8 @@ const verifPessoaFisica = (req, res, next) => {
     dataUsuario.tel1 
   ){
 
+    
+
     if (dataUsuario.senha !== dataUsuario.senha2)
       res.status(401).send({
         msg: "senhas não compatíveis"

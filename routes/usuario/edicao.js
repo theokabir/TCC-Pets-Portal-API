@@ -37,6 +37,13 @@ router.post('/pessoaFisica', (req, res) => {
 
   Usuarios.findOne({_id: userData.id})
   .then(user => {
+
+    if(user.tipo === "ong"){
+      console.log(`entrada de ong na edição de pessoa física`)
+      res.status(401).send({
+        msg: "está rota é apenas para edição de usuário do tipo \"Pessoa Física\""
+      })
+    }
     
     Fisicos.findOne({_id: user.fisico})
     .then(fis => {

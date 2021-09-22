@@ -184,6 +184,7 @@ router.post('/ong', uploadOng.single('social'), verifOng,(req, res)=>{
 
 })
 
+// TODO: Deletar essa rota
 router.get('/find/:id', (req, res) => {
     var id = req.params.id
 

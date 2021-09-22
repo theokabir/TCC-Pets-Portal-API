@@ -11,7 +11,7 @@ const router = express.Router()
 const cadastrarRouter = require('./cadastro')
 const loginRouter = require('./login')
 const editRouter = require('./edicao')
-const readRouter = require('./requisutar')
+const readRouter = require('./requisitar')
 
 //rotas
 //raiz

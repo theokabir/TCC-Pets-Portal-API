@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken'),
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const config = require('./../config/config.json')
 
@@ -8,7 +8,7 @@ const Usuarios = mongoose.model('usuarios')
 exports.obrigatorio = (req, res, next)=>{
     try{
         const token = req.headers.authorization.split(' ')[1]
-        const decode = jwt.verify(token, config.secret)
+        const decode = jwt.verify(token, config.tokenKey)
         req.data = decode
         next ()
     }catch(err){
@@ -24,7 +24,7 @@ exports.obrigatorio = (req, res, next)=>{
 exports.admin = (req, res, next)=>{
     try{
         const token = req.headers.authorization.split(' ')[1]
-        const decode = jwt.verify(token, config.secret)
+        const decode = jwt.verify(token, config.tokenKey)
         req.data = decode
         Usuarios.findOne({_id: req.data._id})
         .then(user=>{
@@ -43,7 +43,7 @@ exports.admin = (req, res, next)=>{
 
             res.status(401).send({
             msg: "erro ao verificar token"
-        })
+            })
         })
 
         next ()
@@ -60,7 +60,7 @@ exports.admin = (req, res, next)=>{
 exports.ong = (req, res, next)=>{
     try{
         const token = req.headers.authorization.split(' ')[1]
-        const decode = jwt.verify(token, config.secret)
+        const decode = jwt.verify(token, config.tokenKey)
         req.data = decode
         Usuarios.findOne({_id: req.data._id})
         .then(user=>{
@@ -92,8 +92,6 @@ exports.ong = (req, res, next)=>{
         })
     }
 }
-  
-
 
 exports.opcional = (req, res, next)=>{
     try{

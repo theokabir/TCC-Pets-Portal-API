@@ -1,5 +1,6 @@
-//arquivo principal 
+//=========arquivo principal==============
 //importações
+//aqui são importadas as principais dependências do projeto 
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
@@ -7,18 +8,21 @@ const cors = require('cors')
 const config = require('./config/config.json')
 
 //variaveis
+//aqui são declaradas variáveis importantes para o funcionamento do algoritmo
 const app = express()
 const port = process.env.PORT || 3000
 
 //rotas
-const userRouter = require('./routes/usuario/usuario')
+//aqui, os arquivos de rotas são colocados em variáveis para serem definidos com suas rotas a partir do root
+const userRouter = require('./routes/usuario/_usuario')
 
 //configurações
+//configurações importantes para o servidor
 app.use(cors())
+// TODO: excluir o morgan antes do deploy
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-//app.use(formidable())
 app.use('/uploads', express.static(__dirname + "/uploads"))
 app.use((req, res, next)=>{
     res.header("Access-Control-Allow-Origin", "*")

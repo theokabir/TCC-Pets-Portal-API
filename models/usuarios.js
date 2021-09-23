@@ -33,10 +33,20 @@ const usuarioSchema = new Schema({
         unique: true
     },
 
+    ddd1: {
+        type: Number,
+        required: true
+    },
+
     tel2: {
         type: Number,
         required: false,
         unique: true
+    },
+
+    ddd2: {
+        type: Number,
+        required: true
     },
 
     imagem: {

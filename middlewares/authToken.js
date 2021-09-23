@@ -96,7 +96,7 @@ exports.ong = (req, res, next)=>{
 exports.opcional = (req, res, next)=>{
     try{
         const token = req.headers.authorization.split(' ')[1]
-        const decode = jwt.verify(token, config.secret)
+        const decode = jwt.verify(token, config.tokenKey)
         req.data = decode
         next()
     }catch(err){

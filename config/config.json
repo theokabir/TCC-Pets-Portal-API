@@ -1,0 +1,6 @@
+{
+    "tokenKey": "testKey",
+    "tokenTime": "12h",
+    "mongoRoute": "mongodb://localhost/petsportal",
+    "searchRange": 1
+}

@@ -334,7 +334,7 @@ router.post('/foto',authToken.obrigatorio, upload.single("img"), (req, res) => {
     user.save()
     .then(newUser => {
       
-      console.log(`usuário salvo com sucesso\nusuário::${newUser}`)
+      console.log(`usuário salvo com sucesso\nusuário::${newUser._id}`)
 
       res.status(200).send({
         msg: "foto salva com sucesso"

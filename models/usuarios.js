@@ -46,7 +46,6 @@ const usuarioSchema = new Schema({
 
     ddd2: {
         type: Number,
-        required: true
     },
 
     imagem: {

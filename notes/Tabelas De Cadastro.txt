@@ -1,0 +1,25 @@
+Cadastros
+	Comum: 
+		obrigatorio::
+			nome: nome
+			email: email
+			senha: senha
+			endereço: endereco
+			tel1: tel1
+		facultativo::
+			tel2: tel2
+==================================================
+	Pessoa física:
+		obrigatorio::
+			nascimento: nasc
+			cpf: cpf
+		facultativo::
+			descrição: desc
+
+	ONG:
+		obrigatorio:
+			estado social: estsoci
+			descrição: desc
+			
+
+		

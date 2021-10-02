@@ -17,28 +17,42 @@ require('./../../models/usuarios')
 require('./../../models/usuarios_subSchemas/fisico')
 require('./../../models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
-const Ongs = mongoose.model('ongs')
+//const Ongs = mongoose.model('ongs')
 
 //config
 const config = require('./../../config/config.json')
 
 //rotas
-router.post('/', (req, res) => {
-  var id = req.body.id
+router.post('/',authToken.opcional, (req, res) => {
 
-  Usuarios.findOne({_id: id})
-  .select('nome email imagem tipo')
-  .populate({
-    path: "fisico",
-    select: "desc -_id"
-  })
-  .populate({
-    path: "ong",
-    select: "desc -_id"
-  })
+  var populateF = {
+    path: "fisico"
+  }
+  var populateO = {
+    path: "ong"
+  }
+  var select = ""
+  
+  me = false
+
+  if (req.data && (req.data.id === req.body.id)) {
+
+    select = "-_id -senha"
+    populateF.select = "-_id"
+    populateO.select = "-_id"
+    me = true
+
+  }else{
+    populateF.select = "desc -_id"
+    populateO.select = "desc -_id"
+    select = "nome email imagem tipo"
+  }
+
+  Usuarios.findOne({_id: req.body.id}) 
+  .select(select).populate(populateF).populate(populateO)
   .then(user => {
     
-    if (user.tipo === "ong" && !user.ong.verificado){
+    if (user.tipo === "ong" && !user.ong.verificado && !me){
       console.log("ong não verificada")
 
       res.status(401).send({
@@ -47,19 +61,22 @@ router.post('/', (req, res) => {
     }
     else {
       console.log(`usuário consultado::${user}`)
+      console.log(`token: ${req.data.id} || body: ${req.body.id}`)
       res.status(200).send({
         msg: "usuário consultado com sucesso",
+        me,
         user: user
       })
     }
 
   })
   .catch(e => {
-    console.log(`erro ao encontrar usuário com id:${id}\nerro::${e}`)
+    console.log(`erro ao encontrar usuário com id:${req.body.id}\nerro::${e}`)
 
     res.status(500).send({
       msg: "erro ao encontrar suário"
     })
+
   })
 
 })

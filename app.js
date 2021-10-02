@@ -1,16 +1,29 @@
 //=========arquivo principal==============
 //importações
-//aqui são importadas as principais dependências do projeto 
+//aqui são importadas as principais dependências do projeto
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const config = require('./config/config.json')
+
+//models
+//"tabelas" do mongo db
+require('./models/usuarios')
+//require('./models/usuarios_subSchemas/fisico')
+//require('./models/usuarios_subSchemas/ong')
+const Usuarios = mongoose.model('usuarios')
+//const Fisicos = mongoose.model('fisicos')
+//const Ongs = mongoose.model('ongs')
 
 //variaveis
 //aqui são declaradas variáveis importantes para o funcionamento do algoritmo
 const app = express()
 const port = process.env.PORT || 3000
+const config = require('./config/config.json')
+
+//middlewares
+//arquivos com funções que interceptam a requisição para fazer verificações
+const authToken = require('./middlewares/authToken')
 
 //rotas
 //aqui, os arquivos de rotas são colocados em variáveis para serem definidos com suas rotas a partir do root
@@ -25,8 +38,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/uploads', express.static(__dirname + "/uploads"))
 app.use((req, res, next)=>{
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header("Acess.Control-Allow-Header",
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000")
+    res.header("Acess-Control-Allow-Header",
     "Accept, Authorization, X-Requested-With, Origin, Content-Type")
 
     if(req.method==="OPTIONS")
@@ -52,11 +65,38 @@ mongoose.connect(config.mongoRoute, {
 //externas
 app.use("/user", userRouter)
 
-//raiz
+//rotas da raiz
 app.get("/", (req, res)=>{
+  res.status(200).send({
+    msg: "rota raiz"
+  })
+})
+
+app.post('/navValidation', authToken.opcional, async (req, res) => {
+
+    var user = {}
+
+    if (req.data) {
+      await Usuarios.findOne({_id: req.data.id})
+      .then(userRes => {
+        user.tipo = (userRes.tipo === "adm")?"adm":"nrm"
+        user.id = req.data.id
+        user.nome = userRes.nome
+        user.img = userRes.imagem
+      })
+      .catch(e => {
+        console.log(`erro ao encontrar usuário na validação do token\nerro:::${e}`)
+        res.status(500).send({
+          msg: "erro ao encontrar usuário"
+        })
+      })
+    }
+
     res.status(200).send({
-        msg: "rota raiz"
+      msg: "sucesso ao validar token",
+      user
     })
+
 })
 
 //abrindo servidor

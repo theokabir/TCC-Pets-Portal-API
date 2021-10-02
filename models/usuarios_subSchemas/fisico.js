@@ -9,7 +9,8 @@ const fisicoSchema = new Schema({
 
     cpf: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
 
     desc: {

@@ -184,28 +184,5 @@ router.post('/ong', uploadOng.single('social'), verifOng,(req, res)=>{
 
 })
 
-// TODO: Deletar essa rota
-router.get('/find/:id', (req, res) => {
-    var id = req.params.id
-
-    Usuarios.findOne({_id: id})
-	.select("-senha -endereco -__v")
-    .populate({
-		path: "fisico",
-		select: "-_id -__v -cpf"
-	})
-    .populate({
-        path: "ong",
-        select: "-_id -__v"
-    })
-    .then(user => {
-        console.log(`usuario listado:\n${user}`)
-        res.status(200).send(user)
-    })
-    .catch(err => {
-        res.status(200).send({msg: err})
-    })
-})
-
 //exportação
 module.exports = router

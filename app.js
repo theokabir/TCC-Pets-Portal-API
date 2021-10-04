@@ -28,6 +28,7 @@ const authToken = require('./middlewares/authToken')
 //rotas
 //aqui, os arquivos de rotas são colocados em variáveis para serem definidos com suas rotas a partir do root
 const userRouter = require('./routes/usuario/_usuario')
+const adminRouter = require('./routes/admin/_adimin')
 
 //configurações
 //configurações importantes para o servidor
@@ -62,8 +63,6 @@ mongoose.connect(config.mongoRoute, {
 })
 
 //rotas
-//externas
-app.use("/user", userRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{
@@ -73,29 +72,33 @@ app.get("/", (req, res)=>{
 })
 
 app.post('/navValidation', authToken.opcional, async (req, res) => {
-
-    var user = {}
-
-    if (req.data) {
-      await Usuarios.findOne({_id: req.data.id})
-      .then(userRes => {
-        user.tipo = (userRes.tipo === "adm")?"adm":"nrm"
-        user.id = req.data.id
-        user.nome = userRes.nome
-        user.img = userRes.imagem
-      })
-      .catch(e => {
-        console.log(`erro ao encontrar usuário na validação do token\nerro:::${e}`)
-        res.status(500).send({
-          msg: "erro ao encontrar usuário"
-        })
-      })
-    }
-
-    res.status(200).send({
-      msg: "sucesso ao validar token",
-      user
+  
+  var user = {}
+  
+  if (req.data) {
+    await Usuarios.findOne({_id: req.data.id})
+    .then(userRes => {
+      user.tipo = (userRes.tipo === "adm")?"adm":"nrm"
+      user.id = req.data.id
+      user.nome = userRes.nome
+      user.img = userRes.imagem
     })
+    .catch(e => {
+      console.log(`erro ao encontrar usuário na validação do token\nerro:::${e}`)
+      res.status(500).send({
+        msg: "erro ao encontrar usuário"
+      })
+    })
+  }
+  
+  //externas
+  app.use("/user", userRouter)
+  app.use("/admin", adminRouter)
+
+  res.status(200).send({
+    msg: "sucesso ao validar token",
+    user
+  })
 
 })
 

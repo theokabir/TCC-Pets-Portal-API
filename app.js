@@ -27,8 +27,8 @@ const authToken = require('./middlewares/authToken')
 
 //rotas
 //aqui, os arquivos de rotas são colocados em variáveis para serem definidos com suas rotas a partir do root
-const userRouter = require('./routes/usuario/_usuario')
-const adminRouter = require('./routes/admin/_adimin')
+const userRouter = require('./routes/usuario/usuario')
+const adminRouter = require('./routes/admin/adimin')
 
 //configurações
 //configurações importantes para o servidor
@@ -63,6 +63,9 @@ mongoose.connect(config.mongoRoute, {
 })
 
 //rotas
+//externas
+app.use("/user", userRouter)
+app.use("/admin", adminRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{
@@ -90,10 +93,6 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
       })
     })
   }
-  
-  //externas
-  app.use("/user", userRouter)
-  app.use("/admin", adminRouter)
 
   res.status(200).send({
     msg: "sucesso ao validar token",

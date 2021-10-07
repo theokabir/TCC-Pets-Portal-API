@@ -29,11 +29,13 @@ router.post('/ong', authToken.obrigatorio, async (req, res) => {
     var limit = req.body.limit || 10
 
     //TODO: refinar busca por ongs
+    //TODO: testar
     var findQuery ={
-
+      tipo: "ong"
     }
 
-    Ongs.find(findQuery).skip(skip).limit(limit)
+    Usuarios.find(findQuery).skip(skip).limit(limit).populate('ong')
+    .select("nome email senha endereco ddd1 tel1 ddd2 tel2 imagem tipo")
     .then(ongs => {
       res.status(200).send({
         msg: "ongs listadas",

@@ -69,7 +69,7 @@ router.post('/user/:tipo',authToken.obrigatorio, async (req, res) => {
 
 })
 
-//TODO: rota de deleção de usuarios
+//TODO: melhorar rota de deleção de usuarios
 router.post('/delete/:tipo', authToken.obrigatorio, async (req, res) => {
 
   await Usuarios.findOne({_id: req.data.id})
@@ -93,8 +93,6 @@ router.post('/delete/:tipo', authToken.obrigatorio, async (req, res) => {
       msg: "erro ao encontrar usuário"
     })
   })
-
-  var delUser
 
   await Usuarios.findOne({_id: req.body.id})
   .then(async user => {

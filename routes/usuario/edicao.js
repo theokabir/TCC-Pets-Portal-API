@@ -36,7 +36,6 @@ router.post('/pessoaFisica',authToken.obrigatorio, (req, res) => {
   var userData = {
     id: req.data.id,
     nome: req.body.nome,
-    email: req.body.email,
     endereco: req.body.endereco,
     tel1: req.body.tel1,
     tel2: req.body.tel2,
@@ -58,14 +57,13 @@ router.post('/pessoaFisica',authToken.obrigatorio, (req, res) => {
       .then(fis => {
   
         // * Dados consultados com sucesso
-        if (userData.nome) user.nome = userData.nome
-        if (userData.email) user.email = userData.email
-        if (userData.endereco) user.endereco = userData.endereco
-        if (userData.tel1) {
+        if (userData.nome || userData.nome !== "") user.nome = userData.nome
+        if (userData.endereco || userData.endereco !== "") user.endereco = userData.endereco
+        if (userData.tel1 || userData.tel1 !== "") {
           user.tel1 = userData.tel1.slice(2)
           user.ddd1 = userData.tel1.slice(0,2)
         }
-        if (userData.tel2) {
+        if (userData.tel2 || userData.tel2 !== "") {
           user.tel2 = userData.tel2.slice(2)
           user.ddd2 = userData.tel2.slice(0,2)
         }
@@ -138,7 +136,6 @@ router.post('/ong',authToken.obrigatorio, (req, res) => {
   var dataUsuario = {
     id: req.data.id,
     nome: req.body.nome,
-    email: req.body.email,
     endereco: req.body.endereco,
     tel1: req.body.tel1,
     tel2: req.body.tel2,
@@ -163,14 +160,13 @@ router.post('/ong',authToken.obrigatorio, (req, res) => {
       .then(ong => {
   
         // * Dados consultados com sucesso
-        if (dataUsuario.nome) user.nome = dataUsuario.nome
-        if (dataUsuario.email) user.email = dataUsuario.email
-        if (dataUsuario.endereco) user.endereco = dataUsuario.endereco
-        if (dataUsuario.tel1) {
+        if (dataUsuario.nome || dataUsuario.nome !== "") user.nome = dataUsuario.nome
+        if (dataUsuario.endereco || dataUsuario.endereco !== "") user.endereco = dataUsuario.endereco
+        if (dataUsuario.tel1 || dataUsuario.tel1 !== "") {
           user.tel1 = dataUsuario.tel1.slice(2)
           user.ddd1 = dataUsuario.tel1.slice(0,2)
         }
-        if (dataUsuario.tel2) {
+        if (dataUsuario.tel2 || dataUsuario.tel2 !== "") {
           user.tel2 = dataUsuario.tel2.slice(2)
           user.ddd2 = dataUsuario.tel2.slice(0,2)
         }

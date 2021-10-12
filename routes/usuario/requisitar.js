@@ -25,6 +25,8 @@ const config = require('./../../config/config.json')
 //rotas
 router.post('/',authToken.opcional, (req, res) => {
 
+  console.log(req.body)
+
   var populateF = {
     path: "fisico"
   }
@@ -37,7 +39,7 @@ router.post('/',authToken.opcional, (req, res) => {
 
   if (req.data && (req.data.id === req.body.id)) {
 
-    select = "-_id -senha"
+    select += "-_id -senha"
     populateF.select = "-_id"
     populateO.select = "-_id"
     me = true

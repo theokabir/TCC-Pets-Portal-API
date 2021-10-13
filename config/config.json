@@ -1,6 +1,6 @@
 {
     "tokenKey": "testKey",
-    "tokenTime": "12h",
+    "tokenTime": "11h",
     "mongoRoute": "mongodb+srv://theokabir:adalfonso188@clusterteste.bipbn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "searchRange": 1
 }

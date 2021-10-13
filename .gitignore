@@ -1,3 +1,8 @@
 node_modules/
-uploads/*
-documents/*
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+documents/*.jpg
+documents/*.jpeg
+documents/*.png
+documents/*.pdf

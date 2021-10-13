@@ -34,6 +34,7 @@ router.get('/', (req, res) => {
 
 router.post('/pessoaFisica',authToken.obrigatorio, (req, res) => {
   var userData = {
+    // * edição apenas do próprio usuário
     id: req.data.id,
     nome: req.body.nome,
     endereco: req.body.endereco,
@@ -134,6 +135,7 @@ router.post('/pessoaFisica',authToken.obrigatorio, (req, res) => {
 router.post('/ong',authToken.obrigatorio, (req, res) => {
 
   var dataUsuario = {
+    // * edução apenas do proprio usuário
     id: req.data.id,
     nome: req.body.nome,
     endereco: req.body.endereco,

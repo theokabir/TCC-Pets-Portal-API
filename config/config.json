@@ -1,6 +1,6 @@
 {
-    "tokenKey": "testKey",
+    "tokenKey": "testeKey",
     "tokenTime": "11h",
-    "mongoRoute": "mongodb+srv://theokabir:NfLjt5rri9IpjBMk@clusterteste.bipbn.mongodb.net/petsportal?retryWrites=true&w=majority",
+    "mongoRoute": "mongodb+srv://theo:RuZ84cRPVmmcAUi@petsportal.y6jma.mongodb.net/petsPortal?retryWrites=true&w=majority",
     "searchRange": 1
 }

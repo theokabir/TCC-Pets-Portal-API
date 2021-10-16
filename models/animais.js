@@ -6,6 +6,11 @@ const animaisSchema = new Schema({
         type: String,
         required: true
     },
+    responsavel: {
+        type: Schema.Types.ObjectId,
+        ref: "usuarios",
+        required: true
+    },
     especie: {
         type: String,
         enum: ["cao", "gato"],

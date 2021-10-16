@@ -16,14 +16,19 @@ const mongoose = require('mongoose')
 require('./../../models/usuarios')
 require('./../../models/usuarios_subSchemas/fisico')
 require('./../../models/usuarios_subSchemas/ong')
+require('./../../models/animais')
+require('./../../models/messages')
 const Usuarios = mongoose.model('usuarios')
+const Animais = mongoose.model('animais')
+const Mensagens = mongoose.model('mensagens')
 //const Ongs = mongoose.model('ongs')
 
 //config
 const config = require('./../../config/config.json')
 
 //rotas
-router.post('/',authToken.opcional, (req, res) => {
+// TODO: testar o retorno de animais
+router.post('/',authToken.opcional, async (req, res) => {
 
   console.log(req.body)
 
@@ -63,11 +68,27 @@ router.post('/',authToken.opcional, (req, res) => {
     }
     else {
       console.log(`usuário consultado::${user}`)
-      console.log(`token: ${req.data.id} || body: ${req.body.id}`)
+      // ? console.log(`token: ${req.data.id} || body: ${req.body.id}`)
+      try {
+        var animais = await Animais.find({responsavel: user._id})
+        if (me){
+          var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
+          var mensagensEnviadas = await Mensagens.find({remetente: user._id})
+        }
+      }catch(e){
+        console.log(`erro ao listar animais ou mensagens:::${e}`)
+
+        res.status(500).send({
+          msg: "erro ao listar os animais ou mensagens"
+        })
+      }
       res.status(200).send({
         msg: "usuário consultado com sucesso",
         me,
-        user: user
+        user,
+        animais,
+        mensagensRecebidas,
+        mensagensEnviadas
       })
     }
 

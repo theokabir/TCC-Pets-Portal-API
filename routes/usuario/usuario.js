@@ -12,6 +12,7 @@ const cadastrarRouter = require('./cadastro')
 const loginRouter = require('./login')
 const editRouter = require('./edicao')
 const readRouter = require('./requisitar')
+const mensagemRouter = require('./mensagem')
 
 //rotas
 //raiz
@@ -26,6 +27,7 @@ router.use('/login', loginRouter)
 router.use('/cadastrar', cadastrarRouter)
 router.use('/edit', editRouter)
 router.use('/read', readRouter)
+router.use('/mensagem', mensagemRouter)
 
 
 //exportação

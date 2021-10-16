@@ -29,6 +29,7 @@ const authToken = require('./middlewares/authToken')
 //aqui, os arquivos de rotas são colocados em variáveis para serem definidos com suas rotas a partir do root
 const userRouter = require('./routes/usuario/usuario')
 const adminRouter = require('./routes/admin/adimin')
+const animaisRouter = require('./routes/animais/animais')
 
 //configurações
 //configurações importantes para o servidor
@@ -66,6 +67,7 @@ mongoose.connect(config.mongoRoute, {
 //externas
 app.use("/user", userRouter)
 app.use("/admin", adminRouter)
+app.use("/animals", animaisRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{

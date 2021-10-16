@@ -22,7 +22,6 @@ const messageSchema = new Schema({
     },
     msg: {
         Type: String,
-        required: true
     },
     resposta:{
         Type: String,

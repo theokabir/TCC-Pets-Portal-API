@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 require('./../../models/animais')
 const Animais = mongoose.model('animais')
 
+//TODO: testar rota
 router.post('/', authToken.obrigatorio, async (req, res) => {
 
 	var newAnimal = {
@@ -43,7 +44,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 		console.log(`erro ao fazer a alteração do animal:::${e}`)
 
 		res.status(e.code || 500).send({
-			msg: "erro ao alterar os dados do animal"
+			msg: e.msg || "erro ao alterar os dados do animal"
 		})
 	}
 

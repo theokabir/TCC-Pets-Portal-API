@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const authToken = require("./../../middlewares/authToken")
 
 require('./../../models/messages')
 const Mensagens = mongoose.model('mensagens')

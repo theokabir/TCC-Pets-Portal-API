@@ -57,7 +57,7 @@ router.post('/',authToken.opcional, async (req, res) => {
 
   Usuarios.findOne({_id: req.body.id}) 
   .select(select).populate(populateF).populate(populateO)
-  .then(user => {
+  .then(async user => {
     
     if (user.tipo === "ong" && !user.ong.verificado && !me){
       console.log("ong não verificada")

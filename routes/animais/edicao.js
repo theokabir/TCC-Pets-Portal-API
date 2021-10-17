@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const authToken = require('./../../middlewares/authToken')
+const upload = require('./../../middlewares/upload')
 const mongoose = require('mongoose')
+const fs = require('fs')
+const authToken = require('./../../middlewares/authToken')
 
 require('./../../models/animais')
 const Animais = mongoose.model('animais')
@@ -45,6 +47,38 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
 		res.status(e.code || 500).send({
 			msg: e.msg || "erro ao alterar os dados do animal"
+		})
+	}
+
+})
+
+router.post('/foto', authToken.obrigatorio, upload.single('img'), async (req, res) => {
+
+	try{
+
+		var animal = await Animais.findOne({_id: req.body.animal})
+		if(animal.responsavel !== req.data.id){
+			var erro = {
+				code: 401,
+				message: "usuário não é o responsavel pelo animal para fazer a edição"
+			}
+
+			throw erro
+		}
+		fs.unlinkSync(animal.foto)
+		animal.foto = req.file.path
+		await animal.save()
+		console.log('foto alterada')
+		res.status(200).send({
+			msg: "foto alterada com sucesso"
+		})
+
+	}catch(e){
+		//TODO: erro
+		if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)
+		console.log(`erro ao alterar foto:::${e.message || e}`)
+		res.status(e.code || 500).send({
+			msg: "erro ao editar foto"
 		})
 	}
 

@@ -30,6 +30,7 @@ const authToken = require('./middlewares/authToken')
 const userRouter = require('./routes/usuario/usuario')
 const adminRouter = require('./routes/admin/adimin')
 const animaisRouter = require('./routes/animais/animais')
+const mensagensRouter = require('./routes/mensagem/mensagem')
 
 //configurações
 //configurações importantes para o servidor
@@ -68,6 +69,7 @@ mongoose.connect(config.mongoRoute, {
 app.use("/user", userRouter)
 app.use("/admin", adminRouter)
 app.use("/animals", animaisRouter)
+app.use("/mensagens", mensagensRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{

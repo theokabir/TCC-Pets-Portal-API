@@ -6,6 +6,10 @@ const animaisSchema = new Schema({
         type: String,
         required: true
     },
+    foto:{
+        type: String,
+        required: true
+    },
     responsavel: {
         type: Schema.Types.ObjectId,
         ref: "usuarios",

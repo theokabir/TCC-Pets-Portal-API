@@ -52,6 +52,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
 })
 
+//TODO: testar rota
 router.post('/foto', authToken.obrigatorio, upload.single('img'), async (req, res) => {
 
 	try{
@@ -65,16 +66,15 @@ router.post('/foto', authToken.obrigatorio, upload.single('img'), async (req, re
 
 			throw erro
 		}
-		fs.unlinkSync(animal.foto)
 		animal.foto = req.file.path
 		await animal.save()
+		fs.unlinkSync(animal.foto)
 		console.log('foto alterada')
 		res.status(200).send({
 			msg: "foto alterada com sucesso"
 		})
 
 	}catch(e){
-		//TODO: erro
 		if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)
 		console.log(`erro ao alterar foto:::${e.message || e}`)
 		res.status(e.code || 500).send({

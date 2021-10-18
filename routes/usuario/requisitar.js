@@ -44,7 +44,7 @@ router.post('/',authToken.opcional, async (req, res) => {
 
   if (req.data && (req.data.id === req.body.id)) {
 
-    select += "-_id -senha"
+    select += "-senha"
     populateF.select = "-_id"
     populateO.select = "-_id"
     me = true
@@ -68,9 +68,9 @@ router.post('/',authToken.opcional, async (req, res) => {
     }
     else {
       console.log(`usuário consultado::${user}`)
-      // ? console.log(`token: ${req.data.id} || body: ${req.body.id}`)
+      console.log(`token: ${req.data.id} || body: ${req.body.id}`)
       try {
-        var animais = await Animais.find({responsavel: user._id})
+        var animais = await Animais.find({responsavel: user._id}).select("_id foto")
         if (me){
           var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
           var mensagensEnviadas = await Mensagens.find({remetente: user._id})
@@ -86,10 +86,7 @@ router.post('/',authToken.opcional, async (req, res) => {
         msg: "usuário consultado com sucesso",
         me,
         user,
-        animais: {
-          id: animais._id,
-          foto: animais.foto
-        },
+        animais,
         mensagensRecebidas,
         mensagensEnviadas
       })
@@ -100,7 +97,7 @@ router.post('/',authToken.opcional, async (req, res) => {
     console.log(`erro ao encontrar usuário com id:${req.body.id}\nerro::${e}`)
 
     res.status(500).send({
-      msg: "erro ao encontrar suário"
+      msg: "erro ao encontrar suár qio"
     })
 
   })

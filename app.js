@@ -85,7 +85,7 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
   if (req.data) {
     await Usuarios.findOne({_id: req.data.id})
     .then(userRes => {
-      user.tipo = (userRes.tipo === "adm")?"adm":"nrm"
+      user.tipo = userRes.tipo
       user.id = req.data.id
       user.nome = userRes.nome
       user.img = userRes.imagem
@@ -103,6 +103,20 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
     user
   })
 
+})
+
+app.post('/getId', authToken.opcional, (req, res) => {
+
+  if(!req.data.id){
+    res.status(200).send({
+      msg: "usuário não possui id"
+    })
+  }else{
+    res.status(200).send({
+      msg: "id requisitado com sucesso",
+      id: req.data.id
+    })
+  }
 })
 
 //abrindo servidor

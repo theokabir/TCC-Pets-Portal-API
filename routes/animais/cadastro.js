@@ -33,35 +33,29 @@ router.post("/",authToken.obrigatorio, upload.single('img'), async (req, res) =>
 			res.status(401).send({
 				msg: "usuário não é verificado"
 			})
-		}
-	}catch(e){
-		console.log(`erro ao manejar usuários:::${e}`)
-		res.status(500).send({
-			msg: "erro ao consultar banco de dados"
-		})
-	}
-	
-	var animal = {
-		nome: req.body.nome,
-		especie: req.body.especie,
-		pelagem: req.body.pelagem,
-		porte: req.body.porte,
-		idade: req.body.idade,
-		observacao: req.body.observacao,
-		vacinas: req.body.vacinas,
-		doencas: req.body.doencas,
-		alergias: req.body.alergias,
-		deficiencias: req.body.deficiencias,
-		responsavel: req.data.id,
-		foto: req.file.path
-	}
+		}else{
+			
+			var animal = {
+				nome: req.body.nome,
+				especie: req.body.especie, // "cao" ou "gato"
+				pelagem: req.body.pelagem,
+				porte: req.body.porte, // "p", "pm", "m", "mg", "g"
+				idade: req.body.idade,
+				observacao: req.body.observacao,
+				vacinas: req.body.vacinas, // "integral", "parcial", "nao_vacinado"
+				doencas: req.body.doencas, // array
+				alergias: req.body.alergias, // array
+				deficiencias: req.body.deficiencias, // array
+				responsavel: req.data.id, // não enviar
+				foto: req.file.path // o nome do campo que eu tenho que receber é "img"
+			}
 
-	try{
-		var newAnimal = await new Animais(animal).save()
-		console.log(`novo animal criado::\n${JSON.stringify(newAnimal)}`)
-		res.status(200).send({
-			msg: "novo animal criado"
-		})
+			var newAnimal = await new Animais(animal).save()
+			console.log(`novo animal criado::\n${JSON.stringify(newAnimal)}`)
+			res.status(200).send({
+				msg: "novo animal criado"
+			})
+		}
 	}catch(e){
 		console.log(`erro ao criar dados do animal:::${e}`)
 		if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)

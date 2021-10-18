@@ -38,16 +38,17 @@ const animaisSchema = new Schema({
     },
     // * historico de saúde
     vacinas: {
-        type: Array
+        type: String,
+        enum: ["integral", "parcial", "nao_vacinado"]
     },
     doencas: {
-        type: Array
+        type: String
     },
     alergias: {
-        type: Array
+        type: String
     },
     deficiencias: {
-        type: Array
+        type: String
     }
 
 })

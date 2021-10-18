@@ -86,7 +86,10 @@ router.post('/',authToken.opcional, async (req, res) => {
         msg: "usuário consultado com sucesso",
         me,
         user,
-        animais,
+        animais: {
+          id: animais._id,
+          foto: animais.foto
+        },
         mensagensRecebidas,
         mensagensEnviadas
       })

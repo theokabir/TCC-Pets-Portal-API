@@ -52,13 +52,12 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
 })
 
-//TODO: testar rota
-router.post('/foto', authToken.obrigatorio, upload.single('img'), async (req, res) => {
+router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, res) => {
 
 	try{
 
-		var animal = await Animais.findOne({_id: req.body.animal})
-		if(animal.responsavel !== req.data.id){
+		var animal = await Animais.findOne({_id: req.body.id})
+		if(animal.responsavel != req.data.id){
 			var erro = {
 				code: 401,
 				message: "usuário não é o responsavel pelo animal para fazer a edição"
@@ -66,10 +65,13 @@ router.post('/foto', authToken.obrigatorio, upload.single('img'), async (req, re
 
 			throw erro
 		}
+		var delImage = animal.foto
 		animal.foto = req.file.path
 		await animal.save()
-		fs.unlinkSync(animal.foto)
 		console.log('foto alterada')
+		await fs.unlink(delImage, (err) => {
+			return
+		})
 		res.status(200).send({
 			msg: "foto alterada com sucesso"
 		})

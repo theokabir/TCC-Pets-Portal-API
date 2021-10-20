@@ -12,7 +12,7 @@ router.post("/", authToken.obrigatorio, async (req, res) => {
 
     try{
         var animal = await Animais.findOne({_id: req.body.animal})
-        if (animal.responsavel !== req.data.id){
+        if (animal.responsavel != req.data.id){
             var erro = {
                 code: 401,
                 msg: "usuario não é o responsável pelo animal para excluí-lo"

@@ -8,50 +8,6 @@ const authToken = require('./../../middlewares/authToken')
 require('./../../models/animais')
 const Animais = mongoose.model('animais')
 
-//TODO: testar rota
-router.post('/', authToken.obrigatorio, async (req, res) => {
-
-	var newAnimal = {
-		nome: req.body.nome,
-		especie: req.body.especie,
-		pelagem: req.body.pelagem,
-		porte: req.body.porte,
-		idade: req.body.idade,
-		observacao: req.body.observacao,
-		vacinas: req.body.vacinas,
-		doencas: req.body.doencas,
-		alergias: req.body.alergias,
-		deficiencias: req.body.deficiencias,
-		responsavel: req.data.id
-	}
-
-	try{
-
-		var animal = await Animais.findOne({_id: req.body.animal})
-		if (animal.responsavel !== req.data.id){
-			var erro = {
-				code: 401,
-				msg: "usuário não é o responsável pelo animal"
-			}
-			throw erro
-		}
-		animal = newAnimal
-		newAnimal = await animal.save()
-		console.log(`animal alterado:::${newAnimal}`)
-		res.status(200).send({
-			msg: "animal alterado"
-		})
-
-	}catch(e){
-		console.log(`erro ao fazer a alteração do animal:::${e}`)
-
-		res.status(e.code || 500).send({
-			msg: e.msg || "erro ao alterar os dados do animal"
-		})
-	}
-
-})
-
 router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, res) => {
 
 	try{
@@ -81,6 +37,92 @@ router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, re
 		console.log(`erro ao alterar foto:::${e.message || e}`)
 		res.status(e.code || 500).send({
 			msg: "erro ao editar foto"
+		})
+	}
+
+})
+
+//TODO: testar rota
+router.post('/:campo', authToken.obrigatorio, async (req, res, next) => {
+
+	var valor = req.body.valor
+	var campo = req.params.campo
+
+	try{
+
+		var animal = await Animais.findOne({_id: req.body.id})
+		if (animal.responsavel != req.data.id){
+			var erro = {
+				code: 401,
+				msg: "usuário não é o responsável pelo animal"
+			}
+			throw erro
+		}
+
+		switch (campo){
+			case 'nome':
+				animal.nome = valor
+				break
+			case 'especie':
+				animal.especie = valor
+				break
+			case 'pelagem':
+				animal.pelagem = valor
+				break
+			case 'porte':
+				animal.porte = valor
+				break
+			case 'idade':
+				animal.idade = valor
+				break
+			case 'observacao':
+				animal.observacao = valor
+				break
+			case 'vacinas':
+				animal.vacinas = valor
+				break
+			case 'doencas':
+				animal.doencas = valor
+				break
+			case 'alergias':
+				animal.alergias = valor
+				break
+			case 'deficiencias':
+				animal.deficiencias = valor
+				break
+			case 'foto':
+				next()
+				break
+			default:
+				var erro = {
+					code: 500,
+					msg: "campo inexistente"
+				}
+				throw erro
+		}
+
+		// animal.nome = newAnimal.nome || animal.nome
+		// animal.especie = newAnimal.especie || animal.especie
+		// animal.pelagem = newAnimal.pelagem || animal.pelagem 
+		// animal.porte = newAnimal.porte || animal.porte
+		// animal.idade = newAnimal.idade || animal.idade
+		// animal.observacao = newAnimal.observacao
+		// animal.vacinas = newAnimal.vacinas
+		// animal.doencas = newAnimal.doencas 
+		// animal.alergias = newAnimal.alergias 
+		// animal.deficiencias = newAnimal.deficiencias
+
+		newAnimal = await animal.save()
+		console.log(`animal alterado:::${newAnimal}`)
+		res.status(200).send({
+			msg: "animal alterado"
+		})
+
+	}catch(e){
+		console.log(`erro ao fazer a alteração do animal:::${e}`)
+
+		res.status(e.code || 500).send({
+			msg: e.msg || "erro ao alterar os dados do animal"
 		})
 	}
 

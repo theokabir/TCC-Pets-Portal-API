@@ -18,9 +18,11 @@ require('./../../models/usuarios_subSchemas/fisico')
 require('./../../models/usuarios_subSchemas/ong')
 require('./../../models/animais')
 require('./../../models/messages')
+require('./../../models/eventos')
 const Usuarios = mongoose.model('usuarios')
 const Animais = mongoose.model('animais')
 const Mensagens = mongoose.model('mensagens')
+const Eventos = mongoose.model('eventos')
 //const Ongs = mongoose.model('ongs')
 
 //config
@@ -75,6 +77,7 @@ router.post('/',authToken.opcional, async (req, res) => {
           var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
           var mensagensEnviadas = await Mensagens.find({remetente: user._id})
         }
+        var eventos = await Eventos.find({responsavel: user._id})
       }catch(e){
         console.log(`erro ao listar animais ou mensagens:::${e}`)
 
@@ -88,7 +91,8 @@ router.post('/',authToken.opcional, async (req, res) => {
         user,
         animais,
         mensagensRecebidas,
-        mensagensEnviadas
+        mensagensEnviadas,
+        eventos
       })
     }
 

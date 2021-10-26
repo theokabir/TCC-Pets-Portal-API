@@ -299,62 +299,32 @@ router.post('/senha',authToken.obrigatorio, (req, res) => {
   }
 })
 
-router.post('/foto',authToken.obrigatorio, upload.single("img"), (req, res) => {
-  var foto = req.file.path
+router.post('/foto', upload.single("img"), authToken.obrigatorio, async (req, res) => {
 
-  Usuarios.findOne({_id: req.data.id})
-  .then(user => {
+  try{
 
-    if(user.imagem){
-      try{
-        fs.unlink(user.imagem, err => {
-          if (err){
-            console.log(`erro ao deletar imagem já existente:::${err}`)
+    var user = await Usuarios.findOne({_id: req.data.id}) 
 
-            res.status(500).send({
-              msg: "erro ao deletar imagem já existente"
-            })
-          }else{
-            console.log("imagem deletada com sucesso")
-          }
-        })
-      }catch (err) {
-        console.log("erro ao deletar imagem já existente")
-
-        res.status(500).send({
-          msg: "erro ao deletar imagem já existente"
-        })
-      }
+    if (user.imagem && fs.existsSync(user.imagem)){
+      fs.unlinkSync(user.imagem)
+      console.log("imagem deletada com sucesso")
     }
 
-    user.imagem = foto
+    user.imagem = req.file.path
+    await user.save()
 
-    user.save()
-    .then(newUser => {
-      
-      console.log(`usuário salvo com sucesso\nusuário::${newUser._id}`)
-
-      res.status(200).send({
-        msg: "foto salva com sucesso"
-      })
-
-    })
-    .catch(e => {
-      console.log(`Erro ao salvar usuário::::${e}`)
-
-      res.status(500).send({
-        msg: "erro ao salvar usuário"
-      })
+    console.log("imagem alterada com sucesso")
+    res.status(200).send({
+      msg: "imagem alterada com sucesso"
     })
 
-  })
-  .catch(e => {
-    console.log(`erro ao encontrar usuário comm o id ${req.data.id}\nerro:::${e}`)
+  }catch(e){
+    console.log(`erro ao alterar imagem:: ${e}`)
 
     res.status(500).send({
-      msg: "erro ao encontrar usuário"
+      msg: "erro ao alterar foto"
     })
-  })
+  }
 
 })
 

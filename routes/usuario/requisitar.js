@@ -77,7 +77,7 @@ router.post('/',authToken.opcional, async (req, res) => {
           var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
           var mensagensEnviadas = await Mensagens.find({remetente: user._id})
         }
-        var eventos = await Eventos.find({responsavel: user._id})
+        var eventos = await Eventos.find({responsavel: user._id}).select("_id nome banner observacao")
       }catch(e){
         console.log(`erro ao listar animais ou mensagens:::${e}`)
 

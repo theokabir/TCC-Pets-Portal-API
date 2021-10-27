@@ -13,11 +13,10 @@ const Eventos = mongoose.model("eventos")
 router.post("/",upload.single("banner"), authToken.obrigatorio, async (req, res) => {
 
   try{
-
-    var user = await Usuarios.findOne({_id: req.data.id})
-    if (!user.ong){
+    var user = await Usuarios.findOne({_id: req.data.id}).populate("ong")
+    if (!user.ong || !user.ong.verificado){
       var err = {
-        msg: "usuario não é uma ong",
+        msg: "usuario não valido",
         code: 401
       }
 

@@ -6,21 +6,25 @@ const mongoose = require('mongoose')
 const authToken = require('./../../middlewares/authToken')
 
 require('./../../models/eventos')
+require('./../../models/usuarios')
 const Eventos = mongoose.model('eventos')
+const Usuarios = mongoose.model('usuarios')
 
 router.use('/cadastro', cadastroRouter)
 router.use('/deletar', deleteRouter)
 
-router.post('/perfil', authToken.obrigatorio, async (req, res) => {
+router.post('/:id', authToken.obrigatorio, async (req, res) => {
+
+  var me = false
+
   try{
-
-    var eventos = await Eventos.find({responsavel: req.data.id})
-
-    console.log(`todos os eventos do usuario ${req.data.id} acessados`)
+    var evento = await Eventos.dinfOne({_id: req.params.id})
+    me = evento.responsavel == req.data.id
 
     res.status(200).send({
-      msg: "eventos listados",
-      eventos
+      msg: "evento listado com sucesso",
+      me,
+      evento
     })
 
   }catch(e){

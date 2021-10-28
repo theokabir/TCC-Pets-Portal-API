@@ -49,6 +49,11 @@ const animaisSchema = new Schema({
     },
     deficiencias: {
         type: String
+    },
+
+    adotado: {
+        type: Boolean,
+        default: false
     }
 
 })

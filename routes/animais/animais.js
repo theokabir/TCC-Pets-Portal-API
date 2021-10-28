@@ -5,8 +5,12 @@ const authToken = require("./../../middlewares/authToken")
 
 require('./../../models/animais')
 require('./../../models/messages')
+require('./../../models/adocoes')
+require('./../../models/usuarios')
 const Mensagens = mongoose.model('mensagens')
 const Animais = mongoose.model('animais')
+const Usuarios = mongoose.model('usuarios')
+const Adocoes = mongoose.model('adocoes')
 
 const cadastroRouter = require('./cadastro')
 const edicaoRouter = require('./edicao')
@@ -20,6 +24,60 @@ router.use("/delete", deleteRouter)
 // ? rota com login obrigatorio
 router.post('/', authToken.obrigatorio, (req, res) => {
     //TODO: rota de pesquisa
+})
+
+router.post('/adotar', authToken.obrigatorio, async (req, res) => {
+
+    try{
+
+        var animalId = req.body.animal
+        var adotanteId = req.body.adotante
+    
+        var animal = await Animais.findOne({_id: animalId})
+        var adotante = await Usuarios.findOne({_id: adotanteId})
+    
+        if (animal.responsavel != req.data.id){
+            var err = {
+                code: 401,
+                msg: "usuário não é o dono do animal"
+            }
+
+            throw err
+        }
+
+        if (!adotante){
+            var err = {
+                code: 401,
+                msg: "adotante inexistente"
+            }
+
+            throw err
+        }
+
+        animal.adotado = true
+        await animal.save()
+
+        var adocao = new Adocoes({
+            adotante: adotanteId,
+            doador: req.data.id,
+            animal: animalId
+        }).save()
+
+        console.log(`adoção realizada:::${adocao}`)
+
+        res.status(200).send({
+            msg: "adocao realizada"
+        })
+
+
+    }catch(e){
+        console.log(`erro ao criar registro de adoção de animal::${e.msg || e}`)
+
+        res.status(e.code || 500).send({
+            msg: "erro ao criar registro de adoção"
+        })
+    }
+    
 })
 
 router.post('/:id', authToken.obrigatorio, async (req, res) => {

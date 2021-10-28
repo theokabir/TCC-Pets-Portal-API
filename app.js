@@ -42,7 +42,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/uploads', express.static(__dirname + "/uploads"))
 app.use((req, res, next)=>{
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000")
+    res.header("Access-Control-Allow-Origin", "*")
     res.header("Acess-Control-Allow-Header",
     "Accept, Authorization, X-Requested-With, Origin, Content-Type")
 

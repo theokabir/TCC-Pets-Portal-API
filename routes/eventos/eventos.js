@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const cadastroRouter = require('./cadastro')
 const deleteRouter = require('./deletar')
+const editRouter = require('./editar')
 const mongoose = require('mongoose')
 const authToken = require('./../../middlewares/authToken')
 
@@ -12,6 +13,7 @@ const Usuarios = mongoose.model('usuarios')
 
 router.use('/cadastro', cadastroRouter)
 router.use('/deletar', deleteRouter)
+router.use('/edit', editRouter)
 
 router.post('/:id', authToken.obrigatorio, async (req, res) => {
 
@@ -28,7 +30,6 @@ router.post('/:id', authToken.obrigatorio, async (req, res) => {
     })
 
   }catch(e){
-    //TODO: catch
     console.log("erro ao listar eventos::: " + e)
 
     res.status(500).send({

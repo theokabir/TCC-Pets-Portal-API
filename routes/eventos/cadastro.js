@@ -31,7 +31,7 @@ router.post("/",upload.single("banner"), gcs.upload, authToken.obrigatorio, asyn
       data: req.body.data,
       observacao: req.body.observacao,
       especies: req.body.especies,
-      banner: req.data.file
+      banner: req.newFile
     }
 
     var evento = await new Eventos(newEvento).save()
@@ -43,7 +43,7 @@ router.post("/",upload.single("banner"), gcs.upload, authToken.obrigatorio, asyn
 
   }catch(e){
     
-    gcs.delete(req.data.file)
+    gcs.delete(req.newFile)
 
     console.log("erro ao criar evento:: " + (e.msg ||  e) )
 

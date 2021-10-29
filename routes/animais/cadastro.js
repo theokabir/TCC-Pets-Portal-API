@@ -29,7 +29,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'),gcs.upload, async (r
 	try {
 		var usuario = await Usuarios.findOne({_id: req.data.id}).populate("ong")
 		if (usuario.tipo === "ong" && !usuario.ong.verificado){
-			gcs.delete(req.data.file)
+			gcs.delete(req.newFile)
 			res.status(401).send({
 				msg: "usuário não é verificado"
 			})
@@ -47,7 +47,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'),gcs.upload, async (r
 				alergias: req.body.alergias, // array
 				deficiencias: req.body.deficiencias, // array
 				responsavel: req.data.id, // não enviar
-				foto: req.data.file // o nome do campo que eu tenho que receber é "img"
+				foto: req.newFile // o nome do campo que eu tenho que receber é "img"
 			}
 
 			var newAnimal = await new Animais(animal).save()
@@ -58,7 +58,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'),gcs.upload, async (r
 		}
 	}catch(e){
 		console.log(`erro ao criar dados do animal:::${e}`)
-		gcs.deletar(req.data.file)
+		gcs.deletar(req.newFile)
 		res.status(500).send({
 			msg: "erro ao criar os dados do animai"
 		})

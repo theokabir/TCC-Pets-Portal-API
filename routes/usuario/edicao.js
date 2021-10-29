@@ -300,15 +300,15 @@ router.post('/senha',authToken.obrigatorio, (req, res) => {
   }
 })
 
-router.post('/foto', upload.single("img"), gcs.upload,authToken.obrigatorio, async (req, res) => {
+router.post('/foto',authToken.obrigatorio, upload.single("img"), gcs.upload, async (req, res) => {
 
   try{
 
-    file = req.data.file
+    file = req.newFile
 
-    var user = await Usuarios.findOne({_id: req.data.id}) 
+    var user = await Usuarios.findOne({_id: req.data.id})
 
-    gcs.delete(user.imagem)
+    await gcs.delete(user.imagem.split("/").pop() || "none")
 
     user.imagem = file
     await user.save()

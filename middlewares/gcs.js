@@ -18,9 +18,10 @@ exports.upload = async (req, res, next) => {
 
   var file = req.file
   console.log(file)
+  var publicUrl = ""
   
   const extensao = file.originalname.split('.').pop()
-  bcrypt.hash(file.originalname, 10, (errBcrypt, hash)=>{
+  await bcrypt.hash(file.originalname, 10, (errBcrypt, hash)=>{
       if (errBcrypt){
           res.status(500).send({msg: "nome da imagem não foi criptografado"})
       }else{
@@ -33,26 +34,27 @@ exports.upload = async (req, res, next) => {
           });
 
           blobStream.on("finish", async (data) => {
-            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+            publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
 
             console.log(publicUrl)
 
-            req.data.file = publicUrl
+            req.newFile = publicUrl
+            next()
+
           })
-
+          
           blobStream.end(req.file.buffer);
-
-          next()
+          console.log("finished")
       }
   })
 }
 
 exports.delete = async (foto) => {
-  
-  if(bucket.file(foto).exists()){
+
+  try{
     await bucket.file(foto).delete()
     console.log(`${foto} deletada`)
-  }else{
+  }catch(e){
     console.log("foto não existe")
   }
 

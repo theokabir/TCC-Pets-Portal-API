@@ -9,7 +9,7 @@ const gcs = require('./../../middlewares/gcs')
 require('./../../models/animais')
 const Animais = mongoose.model('animais')
 
-router.post('/foto', upload.single('img'), gcs.upload, authToken.obrigatorio, async (req, res) => {
+router.post('/foto', authToken.obrigatorio, upload.single('img'), gcs.upload, async (req, res) => {
 
 	try{
 
@@ -23,7 +23,7 @@ router.post('/foto', upload.single('img'), gcs.upload, authToken.obrigatorio, as
 			throw erro
 		}
 		var delImage = animal.foto
-		animal.foto = req.data.file
+		animal.foto = req.newFoto
 		await animal.save()
 		console.log('foto alterada')
 		gcs.delete(delImage)
@@ -32,7 +32,7 @@ router.post('/foto', upload.single('img'), gcs.upload, authToken.obrigatorio, as
 		})
 
 	}catch(e){
-		gcs.delete(req.data.file)
+		gcs.delete(req.newfoto)
 		console.log(`erro ao alterar foto:::${e.message || e}`)
 		res.status(e.code || 500).send({
 			msg: "erro ao editar foto"

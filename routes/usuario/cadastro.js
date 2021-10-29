@@ -111,7 +111,7 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
 
 router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=>{
 
-    req.newUser.estadoSocial = req.data.file
+    req.newUser.estadoSocial = req.newFile
     Usuarios.find().or([
         {email: req.newUser.email},
         {tel1: req.newUser.tel1},
@@ -178,7 +178,7 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=
     .catch(e => {
         console.log(`Erro ao encontrar usuários com o mesmo email:::\n${e}`)
 
-        gcs.delete(req.data.file)
+        gcs.delete(req.newFile)
 
         res.status(500).send({
             msg: "Erro ao encontrar usuários com o mesmo email"

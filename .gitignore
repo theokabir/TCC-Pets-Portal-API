@@ -6,3 +6,4 @@ documents/*.jpg
 documents/*.jpeg
 documents/*.png
 documents/*.pdf
+.env

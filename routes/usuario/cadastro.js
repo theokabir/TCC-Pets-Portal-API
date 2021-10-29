@@ -1,3 +1,4 @@
+//TODO: testar cadastro de ong
 /*
 
     rota: api/user/cadastrar
@@ -9,6 +10,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const uploadOng = require('./../../middlewares/uploadOng')
+const gcs = require('./../../middlewares/gcs')
 const router = express.Router()
 
 //mongoose models
@@ -107,9 +109,9 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
 
 })
 
-router.post('/ong', uploadOng.single('social'), verifOng,(req, res)=>{
+router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=>{
 
-    req.newUser.estadoSocial = req.file.path
+    req.newUser.estadoSocial = req.data.file
     Usuarios.find().or([
         {email: req.newUser.email},
         {tel1: req.newUser.tel1},
@@ -175,6 +177,8 @@ router.post('/ong', uploadOng.single('social'), verifOng,(req, res)=>{
     })
     .catch(e => {
         console.log(`Erro ao encontrar usuários com o mesmo email:::\n${e}`)
+
+        gcs.delete(req.data.file)
 
         res.status(500).send({
             msg: "Erro ao encontrar usuários com o mesmo email"

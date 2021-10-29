@@ -1,14 +1,15 @@
+//TODO: testar
 const express = require('express')
 const router = express.Router()
 const upload = require('./../../middlewares/upload')
 const mongoose = require('mongoose')
-const fs = require('fs')
 const authToken = require('./../../middlewares/authToken')
+const gcs = require('./../../middlewares/gcs')
 
 require('./../../models/animais')
 const Animais = mongoose.model('animais')
 
-router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, res) => {
+router.post('/foto', upload.single('img'), gcs.upload, authToken.obrigatorio, async (req, res) => {
 
 	try{
 
@@ -22,18 +23,16 @@ router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, re
 			throw erro
 		}
 		var delImage = animal.foto
-		animal.foto = req.file.path
+		animal.foto = req.data.file
 		await animal.save()
 		console.log('foto alterada')
-		await fs.unlink(delImage, (err) => {
-			return
-		})
+		gcs.delete(delImage)
 		res.status(200).send({
 			msg: "foto alterada com sucesso"
 		})
 
 	}catch(e){
-		if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)
+		gcs.delete(req.data.file)
 		console.log(`erro ao alterar foto:::${e.message || e}`)
 		res.status(e.code || 500).send({
 			msg: "erro ao editar foto"
@@ -42,7 +41,6 @@ router.post('/foto', upload.single('img'), authToken.obrigatorio, async (req, re
 
 })
 
-//TODO: testar rota
 router.post('/:campo', authToken.obrigatorio, async (req, res, next) => {
 
 	var valor = req.body.valor

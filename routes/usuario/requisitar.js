@@ -29,7 +29,6 @@ const Eventos = mongoose.model('eventos')
 const config = require('./../../config/config.json')
 
 //rotas
-// TODO: testar o retorno de animais
 router.post('/',authToken.opcional, async (req, res) => {
 
   console.log(req.body)

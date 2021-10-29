@@ -11,8 +11,10 @@
   "author": "Theo Kabir",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^5.15.3",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",

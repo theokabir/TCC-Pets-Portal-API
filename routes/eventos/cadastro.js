@@ -1,16 +1,17 @@
+//TODO: testar google cloud
 const express = require('express')
 const router = express.Router()
 const mongoose = require("mongoose")
 const authToken = require('./../../middlewares/authToken')
 const upload = require('./../../middlewares/upload')
-const fs = require('fs')
+const gcs = require('./../../middlewares/gcs')
 
 require("./../../models/usuarios")
 require('./../../models/eventos')
 const Usuarios = mongoose.model("usuarios")
 const Eventos = mongoose.model("eventos")
 
-router.post("/",upload.single("banner"), authToken.obrigatorio, async (req, res) => {
+router.post("/",upload.single("banner"), gcs.upload, authToken.obrigatorio, async (req, res) => {
 
   try{
     var user = await Usuarios.findOne({_id: req.data.id}).populate("ong")
@@ -30,7 +31,7 @@ router.post("/",upload.single("banner"), authToken.obrigatorio, async (req, res)
       data: req.body.data,
       observacao: req.body.observacao,
       especies: req.body.especies,
-      banner: req.file.path
+      banner: req.data.file
     }
 
     var evento = await new Eventos(newEvento).save()
@@ -41,17 +42,8 @@ router.post("/",upload.single("banner"), authToken.obrigatorio, async (req, res)
     })
 
   }catch(e){
-    if (req.file) {
-      fs.unlink(req.file.path, (err => {
-        if (err) {
-          console.log("erro ao deletar foto apos erro ao criar evento::" + err)
-
-          res.status(500).send({
-            msg: "erro adeletar imagem apos erro ao criar evento: "
-          })
-        }
-      }))
-    }
+    
+    gcs.delete(req.data.file)
 
     console.log("erro ao criar evento:: " + (e.msg ||  e) )
 

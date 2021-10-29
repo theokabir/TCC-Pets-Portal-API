@@ -1,13 +1,13 @@
+//TODO: testar
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const fs = require('fs')
 const authToken = require("./../../middlewares/authToken")
+const gcs = require('./../../middlewares/gcs')
 
 require('./../../models/animais')
 const Animais = mongoose.model("animais")
 
-//TODO: testar rota
 router.post("/", authToken.obrigatorio, async (req, res) => {
 
     try{
@@ -20,7 +20,7 @@ router.post("/", authToken.obrigatorio, async (req, res) => {
             throw erro
         }
 
-        fs.unlinkSync(animal.foto)
+        gcs.delete(animal.foto)
         await Animais.deleteOne({_id: req.body.animal})
         console.log("animal excluido")
         res.status(200).send({
@@ -28,7 +28,6 @@ router.post("/", authToken.obrigatorio, async (req, res) => {
         })
 
     }catch(e){
-        //TODO: erro nas verificações
         console.log(`erro ao tentar excluir dados do animal:::${e.msg || e}`)
 
         res.status(e.code || 500).send({

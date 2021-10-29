@@ -13,27 +13,9 @@ const fileFilter = (req, file, cb)=>{
 
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb)=>{
-        cb(null, "./uploads/")
-    },
-    filename: (req, file, cb)=>{
-
-        const extensao = file.originalname.split('.').pop()
-        bcrypt.hash(file.originalname, 10, (errBcrypt, hash)=>{
-            if (errBcrypt){
-                cb(null, false)
-            }else{
-                cb(null, `${hash.replace(/\W/g,"")}.${extensao}`)
-            }
-        })
-
-    }
-})
-
 
 const upload = multer({
-    storage: storage,
+    storage: multer.memoryStorage,
     limits: {
         fileSize: 1024 * 1024 * megabyteLimit
     },

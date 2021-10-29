@@ -5,6 +5,12 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
+/**
+ * MONGO_URI
+ * TOKEN_TIME
+ * TOKEN_KEY
+*/
+const dotenv = require('dotenv')
 
 //models
 //"tabelas" do mongo db
@@ -18,8 +24,6 @@ const Usuarios = mongoose.model('usuarios')
 //variaveis
 //aqui são declaradas variáveis importantes para o funcionamento do algoritmo
 const app = express()
-const port = process.env.PORT || 3000
-const config = require('./config/config.json')
 
 //middlewares
 //arquivos com funções que interceptam a requisição para fazer verificações
@@ -35,9 +39,10 @@ const eventsRouter = require('./routes/eventos/eventos')
 
 //configurações
 //configurações importantes para o servidor
+app.use(morgan('dev'))
 app.use(cors())
 // TODO: excluir o morgan antes do deploy
-app.use(morgan('dev'))
+dotenv.config()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/uploads', express.static(__dirname + "/uploads"))
@@ -53,7 +58,7 @@ app.use((req, res, next)=>{
 })
 
 //banco de dados
-mongoose.connect(config.mongoRoute, {
+mongoose.connect(process.env.MONGO_URI, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -122,4 +127,4 @@ app.post('/getId', authToken.opcional, (req, res) => {
 })
 
 //abrindo servidor
-app.listen(port, ()=>console.log(`servidor aberto na porta ${port}`))
+app.listen(process.env.PORT, ()=>console.log(`servidor aberto na porta ${process.env.PORT}`))

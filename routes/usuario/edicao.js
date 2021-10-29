@@ -1,3 +1,4 @@
+//TODO: testar imagem
 /**
  * 
  * rota: api/user/edit/
@@ -10,7 +11,6 @@ const router = express.Router()
 
 // outras dependencias
 const bcrypt = require('bcrypt')
-const fs = require('fs')
 
 //models
 const mongoose = require('mongoose')
@@ -24,6 +24,7 @@ const Ongs = mongoose.model('ongs')
 //middlewares
 const authToken = require('./../../middlewares/authToken')
 const upload = require('./../../middlewares/upload')
+const gcs = require('./../../middlewares/gcs')
 
 
 router.get('/', (req, res) => {
@@ -299,18 +300,17 @@ router.post('/senha',authToken.obrigatorio, (req, res) => {
   }
 })
 
-router.post('/foto', upload.single("img"), authToken.obrigatorio, async (req, res) => {
+router.post('/foto', upload.single("img"), gcs.upload,authToken.obrigatorio, async (req, res) => {
 
   try{
 
+    file = req.data.file
+
     var user = await Usuarios.findOne({_id: req.data.id}) 
 
-    if (user.imagem && fs.existsSync(user.imagem)){
-      fs.unlinkSync(user.imagem)
-      console.log("imagem deletada com sucesso")
-    }
+    gcs.delete(user.imagem)
 
-    user.imagem = req.file.path
+    user.imagem = file
     await user.save()
 
     console.log("imagem alterada com sucesso")

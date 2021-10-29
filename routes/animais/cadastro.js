@@ -1,8 +1,9 @@
+//TODO: testar
 const express = require("express")
 const mongoose = require('mongoose')
-const fs = require('fs')
 const router = express.Router()
 const upload = require('./../../middlewares/upload')
+const gcs = require('./../../middlewares/gcs')
 const authToken = require('./../../middlewares/authToken')
 
 // models
@@ -13,8 +14,7 @@ const Usuarios = mongoose.model("usuarios")
 const Animais = mongoose.model("animais")
 const Mensagens = mongoose.model("mensagens")
 
-// TODO: testar rota de ciração de animal
-router.post("/",authToken.obrigatorio, upload.single('img'), async (req, res) => {
+router.post("/",authToken.obrigatorio, upload.single('img'),gcs.upload, async (req, res) => {
 
 	// * verificar existência do arquivo de imagem
 	if(!req.file){
@@ -29,7 +29,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'), async (req, res) =>
 	try {
 		var usuario = await Usuarios.findOne({_id: req.data.id}).populate("ong")
 		if (usuario.tipo === "ong" && !usuario.ong.verificado){
-			if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)
+			gcs.delete(req.data.file)
 			res.status(401).send({
 				msg: "usuário não é verificado"
 			})
@@ -47,7 +47,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'), async (req, res) =>
 				alergias: req.body.alergias, // array
 				deficiencias: req.body.deficiencias, // array
 				responsavel: req.data.id, // não enviar
-				foto: req.file.path // o nome do campo que eu tenho que receber é "img"
+				foto: req.data.file // o nome do campo que eu tenho que receber é "img"
 			}
 
 			var newAnimal = await new Animais(animal).save()
@@ -58,7 +58,7 @@ router.post("/",authToken.obrigatorio, upload.single('img'), async (req, res) =>
 		}
 	}catch(e){
 		console.log(`erro ao criar dados do animal:::${e}`)
-		if(fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)
+		gcs.deletar(req.data.file)
 		res.status(500).send({
 			msg: "erro ao criar os dados do animai"
 		})

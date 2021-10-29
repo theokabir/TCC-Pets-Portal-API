@@ -1,8 +1,9 @@
+//TODO: testar google cloud
 const express = require("express")
 const router = express.Router()
 const mongoose = require("mongoose")
 const authToken = require('./../../middlewares/authToken')
-const fs = require('fs')
+const gcs = require('./../../middlewares/gcs')
 
 require('./../../models/eventos')
 const Eventos = mongoose.model("eventos")
@@ -22,7 +23,7 @@ router.post("/", authToken.obrigatorio, async (req, res) => {
     }
 
     await Eventos.deleteOne({_id: evento._id})
-    await fs.unlink(evento.bunner, (err) => {if (err) throw err})
+    gcs.delete(evento.banner)
 
     console.log("evento deletado")
 

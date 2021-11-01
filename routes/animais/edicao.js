@@ -11,19 +11,25 @@ const Animais = mongoose.model('animais')
 
 router.post('/foto', authToken.obrigatorio, upload.single('img'), gcs.upload, async (req, res) => {
 
+	console.log("foto nova " + req.newFile)
+
 	try{
 
+		
 		var animal = await Animais.findOne({_id: req.body.id})
 		if(animal.responsavel != req.data.id){
 			var erro = {
 				code: 401,
 				message: "usuário não é o responsavel pelo animal para fazer a edição"
 			}
-
+			
 			throw erro
 		}
-		var delImage = animal.foto
-		animal.foto = req.newFoto
+		if (animal.foto){
+			var delImage = animal.foto.split("/").pop()
+		}
+		console.log("foto a ser deletada " + animal.foto)
+		animal.foto = req.newFile
 		await animal.save()
 		console.log('foto alterada')
 		gcs.delete(delImage)

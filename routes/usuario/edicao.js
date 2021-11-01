@@ -308,7 +308,9 @@ router.post('/foto',authToken.obrigatorio, upload.single("img"), gcs.upload, asy
 
     var user = await Usuarios.findOne({_id: req.data.id})
 
-    await gcs.delete(user.imagem.split("/").pop() || "none")
+    if(user.imagem){
+      await gcs.delete(user.imagem.split("/").pop() || "none")
+    }
 
     user.imagem = file
     await user.save()

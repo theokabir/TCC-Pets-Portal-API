@@ -61,14 +61,12 @@ const usuarioSchema = new Schema({
 
     fisico: {
         type: Schema.Types.ObjectId,
-        ref: "fisicos",
-        unique: true
+        ref: "fisicos"
     },
 
     ong: {
         type: Schema.Types.ObjectId,
-        ref: "ongs",
-        unique: true
+        ref: "ongs"
     }
 
 })

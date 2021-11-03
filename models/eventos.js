@@ -36,11 +36,17 @@ const eventsSchema = new Schema({
   especies: {
     type: String,
     enum: ["c", "g","cg", "geral"],
+    required: true
   },
   
   banner: {
     type: String,
     required: true
+  },
+
+  editado: {
+    type: Boolean,
+    default: false
   }
 
 })

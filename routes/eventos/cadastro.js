@@ -13,6 +13,10 @@ const Eventos = mongoose.model("eventos")
 
 router.post("/",upload.single("banner"), gcs.upload, authToken.obrigatorio, async (req, res) => {
 
+  console.log("body:::::::::::::::::::::::::::::::::::::::::::::::::")
+  console.log(req.body)
+  console.log("body:::::::::::::::::::::::::::::::::::::::::::::::::")
+
   try{
     var user = await Usuarios.findOne({_id: req.data.id}).populate("ong")
     if (!user.ong || !user.ong.verificado){

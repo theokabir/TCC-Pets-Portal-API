@@ -20,7 +20,7 @@ router.post('/:id', authToken.obrigatorio, async (req, res) => {
   var me = false
 
   try{
-    var evento = await Eventos.dinfOne({_id: req.params.id})
+    var evento = await Eventos.findOne({_id: req.params.id})
     me = evento.responsavel == req.data.id
 
     res.status(200).send({

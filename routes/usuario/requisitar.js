@@ -19,10 +19,12 @@ require('./../../models/usuarios_subSchemas/ong')
 require('./../../models/animais')
 require('./../../models/messages')
 require('./../../models/eventos')
+require('./../../models/pedidos')
 const Usuarios = mongoose.model('usuarios')
 const Animais = mongoose.model('animais')
 const Mensagens = mongoose.model('mensagens')
 const Eventos = mongoose.model('eventos')
+const Pedidos = mongoose.model('pedidos')
 //const Ongs = mongoose.model('ongs')
 
 //config
@@ -75,6 +77,7 @@ router.post('/',authToken.opcional, async (req, res) => {
         if (me){
           var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
           var mensagensEnviadas = await Mensagens.find({remetente: user._id})
+          var pedidos = await Pedidos.find({doador: user._id}) 
         }
         var eventos = await Eventos.find({responsavel: user._id}).select("-editado")
       }catch(e){
@@ -91,7 +94,8 @@ router.post('/',authToken.opcional, async (req, res) => {
         animais,
         mensagensRecebidas,
         mensagensEnviadas,
-        eventos
+        eventos,
+        pedidos
       })
     }
 

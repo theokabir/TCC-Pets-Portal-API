@@ -26,60 +26,6 @@ router.post('/', authToken.obrigatorio, (req, res) => {
     //TODO: rota de pesquisa
 })
 
-router.post('/adotar', authToken.obrigatorio, async (req, res) => {
-
-    try{
-
-        var animalId = req.body.animal
-        var adotanteId = req.body.adotante
-    
-        var animal = await Animais.findOne({_id: animalId})
-        var adotante = await Usuarios.findOne({_id: adotanteId})
-    
-        if (animal.responsavel != req.data.id){
-            var err = {
-                code: 401,
-                msg: "usuário não é o dono do animal"
-            }
-
-            throw err
-        }
-
-        if (!adotante){
-            var err = {
-                code: 401,
-                msg: "adotante inexistente"
-            }
-
-            throw err
-        }
-
-        animal.adotado = true
-        await animal.save()
-
-        var adocao = new Adocoes({
-            adotante: adotanteId,
-            doador: req.data.id,
-            animal: animalId
-        }).save()
-
-        console.log(`adoção realizada:::${adocao}`)
-
-        res.status(200).send({
-            msg: "adocao realizada"
-        })
-
-
-    }catch(e){
-        console.log(`erro ao criar registro de adoção de animal::${e.msg || e}`)
-
-        res.status(e.code || 500).send({
-            msg: "erro ao criar registro de adoção"
-        })
-    }
-    
-})
-
 router.post('/:id', authToken.obrigatorio, async (req, res) => {
 
     try{
@@ -90,6 +36,9 @@ router.post('/:id', authToken.obrigatorio, async (req, res) => {
             select: "_id imagem"
         })
         var me = animal.responsavel._id == req.data.id
+        if (me){
+            //TODO: edição de pedidos
+        }
         res.status(200).send({
             animal,
             me

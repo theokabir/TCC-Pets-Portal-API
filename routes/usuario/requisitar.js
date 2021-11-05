@@ -45,7 +45,7 @@ router.post('/',authToken.opcional, async (req, res) => {
   
   me = false
 
-  if (req.data && (req.data.id === req.body.id)) {
+  if (req.data && (req.data.id == req.body.id)) {
 
     select += "-senha"
     populateF.select = "-_id"
@@ -54,7 +54,7 @@ router.post('/',authToken.opcional, async (req, res) => {
 
   }else{
     populateF.select = "desc -_id"
-    populateO.select = "desc -_id"
+    populateO.select = "desc -_id verificado"
     select = "nome email imagem tipo"
   }
 
@@ -62,7 +62,10 @@ router.post('/',authToken.opcional, async (req, res) => {
   .select(select).populate(populateF).populate(populateO)
   .then(async user => {
     
-    if (user.tipo === "ong" && !user.ong.verificado && !me){
+    if (user.tipo == "ong" && !user.ong.verificado && !me){
+
+      console.log(user)
+
       console.log("ong não verificada")
 
       res.status(401).send({

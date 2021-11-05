@@ -31,14 +31,14 @@ router.post('/', (req, res)=>{
 
 //rotas
 //cadatrar pessoa física
-router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
+router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
 
     Usuarios.find().or([
         {email: req.newUser.email},
         {tel1: req.newUser.tel1},
         {tel2: req.newUser.tel2}
     ])
-    .then(user => {
+    .then(async user => {
 
         if(user.lenght > 0){
             console.log(`Usuário já registrado::::\n${user}`)
@@ -49,7 +49,7 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
         }   
         else{
 
-            bcrypt.hash(req.newUser.senha, 10, (errBcrypt, hash) => {
+            bcrypt.hash(req.newUser.senha, 10, async (errBcrypt, hash) => {
                 if (errBcrypt){
                     console.log("Erro ao encriptar senha")
 
@@ -61,35 +61,66 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
 
                     req.newUser.senha = hash
 
-                    new Fisico(req.newUser).save()
-                    .then(newPessoaFisica=> {
+                    var fisico, newUser
 
-                        req.newUser.fisico = newPessoaFisica._id
+                    try {
 
-                        new Usuarios(req.newUser).save()
-                        .then(newPessoa => {
-                            console.log(`Novo usuário criado::::\n${newPessoa}`)
+                        fisico = await new Fisico(req.newUser).save()
+                        req.newUser.fisico = fisico._id
+                        newUser = await new Usuarios(req.newUser).save()
 
-                            res.status(200).send({
-                                msg: "Novo usuário criado"
-                            })
-                        })
-                        .catch(e => {
-                            console.log(`Erro ao criar dado do usuário:::::\n${e}`)
+                        console.log(`Novo usuário criado::::\n${newUser}`)
 
-                            res.status(500).send({
-                                msg: "Erro ao criar dado do usuário"
-                            })
+                        res.status(200).send({
+                            msg: "Novo usuário criado"
                         })
 
-                    })
-                    .catch(e => {
-                        console.log(`Erro ao criar dado de pesssoa física::::\n${e}`)
+                    }catch(e){
+
+                        try{
+                            Fisico.deleteOne({_id: fisico._id})
+                            Usuarios.deleteOne({_id: newUser._id})
+                        }catch(e){
+
+                        }
+
+                        console.log(`erro ao criar usuário:::${e}`)
 
                         res.status(500).send({
                             msg: "erro ao criar usuário de pessoa física"
                         })
-                    })
+
+                    }
+
+                    // new Fisico(req.newUser).save()
+                    // .then(newPessoaFisica=> {
+
+                    //     req.newUser.fisico = newPessoaFisica._id
+
+                    //     new Usuarios(req.newUser).save()
+                    //     .then(newPessoa => {
+                    //         console.log(`Novo usuário criado::::\n${newPessoa}`)
+
+                    //         res.status(200).send({
+                    //             msg: "Novo usuário criado"
+                    //         })
+                    //     })
+                    //     .catch(e => {
+                    //         console.log(`Erro ao criar dado do usuário:::::\n${e}`)
+
+                    //         res.status(500).send({
+                    //             msg: "Erro ao criar dado do usuário"
+                    //         })
+                    //     })
+
+                    // })
+                    // .catch(e => {
+                    //     console.log(`Erro ao criar dado de pesssoa física::::\n${e}`)
+
+                    //     res.status(500).send({
+                    //         msg: "erro ao criar usuário de pessoa física"
+                    //     })
+                    // })
 
                 }
             })
@@ -103,7 +134,7 @@ router.post("/pessoaFisica",verifPessoaFisica, (req, res)=>{
         res.status(500).send({
             msg: "Erro ao encontrar usuário já existente"
         })
-        })
+    })
     
 
 

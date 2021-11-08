@@ -17,14 +17,12 @@ require('./../../models/usuarios')
 require('./../../models/usuarios_subSchemas/fisico')
 require('./../../models/usuarios_subSchemas/ong')
 require('./../../models/animais')
-require('./../../models/messages')
 require('./../../models/eventos')
-require('./../../models/pedidos')
+//require('./../../models/pedidos')
 const Usuarios = mongoose.model('usuarios')
 const Animais = mongoose.model('animais')
-const Mensagens = mongoose.model('mensagens')
 const Eventos = mongoose.model('eventos')
-const Pedidos = mongoose.model('pedidos')
+//const Pedidos = mongoose.model('pedidos')
 //const Ongs = mongoose.model('ongs')
 
 //config
@@ -78,9 +76,7 @@ router.post('/',authToken.opcional, async (req, res) => {
       try {
         var animais = await Animais.find({responsavel: user._id}).select("_id foto")
         if (me){
-          var mensagensRecebidas = await Mensagens.find({destinatario: user._id})
-          var mensagensEnviadas = await Mensagens.find({remetente: user._id})
-          var pedidos = await Pedidos.find({doador: user._id}) 
+          //var pedidos = await Pedidos.find({adotante: user._id}) 
         }
         var eventos = await Eventos.find({responsavel: user._id}).select("-editado")
       }catch(e){
@@ -95,10 +91,7 @@ router.post('/',authToken.opcional, async (req, res) => {
         me,
         user,
         animais,
-        mensagensRecebidas,
-        mensagensEnviadas,
-        eventos,
-        pedidos
+        eventos
       })
     }
 

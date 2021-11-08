@@ -4,10 +4,8 @@ const mongoose = require('mongoose')
 const authToken = require("./../../middlewares/authToken")
 
 require('./../../models/animais')
-require('./../../models/messages')
 require('./../../models/adocoes')
 require('./../../models/usuarios')
-const Mensagens = mongoose.model('mensagens')
 const Animais = mongoose.model('animais')
 const Usuarios = mongoose.model('usuarios')
 const Adocoes = mongoose.model('adocoes')
@@ -15,10 +13,12 @@ const Adocoes = mongoose.model('adocoes')
 const cadastroRouter = require('./cadastro')
 const edicaoRouter = require('./edicao')
 const deleteRouter = require('./delete')
+const adocaoRouter = require('./adocao')
 
 router.use("/cadastro", cadastroRouter)
 router.use("/edit", edicaoRouter)
 router.use("/delete", deleteRouter)
+router.use("/adocao", adocaoRouter)
 
 //TODO: testar rota
 // ? rota com login obrigatorio

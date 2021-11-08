@@ -9,10 +9,8 @@ const authToken = require('./../../middlewares/authToken')
 // models
 require('./../../models/usuarios')
 require('./../../models/animais')
-require('./../../models/messages')
 const Usuarios = mongoose.model("usuarios")
 const Animais = mongoose.model("animais")
-const Mensagens = mongoose.model("mensagens")
 
 router.post("/",authToken.obrigatorio, upload.single('img'),gcs.upload, async (req, res) => {
 

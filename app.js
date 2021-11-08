@@ -34,7 +34,6 @@ const authToken = require('./middlewares/authToken')
 const userRouter = require('./routes/usuario/usuario')
 const adminRouter = require('./routes/admin/adimin')
 const animaisRouter = require('./routes/animais/animais')
-const mensagensRouter = require('./routes/mensagem/mensagem')
 const eventsRouter = require('./routes/eventos/eventos')
 
 //configurações
@@ -75,7 +74,6 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use("/user", userRouter)
 app.use("/admin", adminRouter)
 app.use("/animals", animaisRouter)
-app.use("/mensagens", mensagensRouter)
 app.use("/events", eventsRouter)
 
 //rotas da raiz

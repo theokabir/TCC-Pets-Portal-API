@@ -18,7 +18,7 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
     var animais
 
     if(!req.data){
-      animais = await Animais.find().sort({data: 1}).limit(9)
+      animais = await Animais.find().sort({data: 1}).limit(8)
     }else{
       console.log("data: " + req.data)
       var user = await Usuarios.findOne({_id: req.data.id})
@@ -58,7 +58,7 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
         },
         select: "_id"
       })
-      .select("_id nome foto").sort({data: 1}).limit(9)
+      .select("_id nome foto").sort({data: 1}).limit(8)
     }
 
     console.log('animaisdo carrosel foram listados')

@@ -35,6 +35,7 @@ const userRouter = require('./routes/usuario/usuario')
 const adminRouter = require('./routes/admin/adimin')
 const animaisRouter = require('./routes/animais/animais')
 const eventsRouter = require('./routes/eventos/eventos')
+const homeRouter = require('./routes/home/home')
 
 //configurações
 //configurações importantes para o servidor
@@ -75,6 +76,7 @@ app.use("/user", userRouter)
 app.use("/admin", adminRouter)
 app.use("/animals", animaisRouter)
 app.use("/events", eventsRouter)
+app.use("/home", homeRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{

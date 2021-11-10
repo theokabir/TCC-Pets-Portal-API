@@ -173,7 +173,7 @@ router.post('/aceitos', authToken.obrigatorio, async(req, res) => {
             path: "animal",
             select: "_id nome foto"
         })
-        .sort({data: "desc"})
+        .sort({data: -1})
 
         var adotados = await Pedidos.find({adotante: req.data.id, status: "confirmado"})
         .populate({
@@ -184,7 +184,7 @@ router.post('/aceitos', authToken.obrigatorio, async(req, res) => {
             path: "animal",
             select:"foto nome"
         })
-        .sort({data: "desc"})
+        .sort({data: -1})
 
         console.log("pedidos aceitos foram listados")
 
@@ -219,7 +219,7 @@ router.post("/espera", authToken.obrigatorio, async(req, res)=> {
             path: "animal",
             select: "_id nome foto"
         })
-        .sort({data: "desc"})
+        .sort({data: 1})
 
         var adotados = await Pedidos.find({adotante: req.data.id, status: "espera"})
         .select("-status")
@@ -231,7 +231,7 @@ router.post("/espera", authToken.obrigatorio, async(req, res)=> {
             path: "animal",
             select:"foto nome"
         })
-        .sort({data: "desc"})
+        .sort({data: 1})
 
         console.log("pedidos em espera foram listados")
 

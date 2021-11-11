@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+                const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const eventsSchema = new Schema({
@@ -12,7 +12,7 @@ const eventsSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "usuarios",
     required: true
-  },
+  },        
 
   contato: {
     type: String,
@@ -45,6 +45,11 @@ const eventsSchema = new Schema({
   },
 
   editado: {
+    type: Boolean,
+    default: false
+  },
+
+  verificado: {
     type: Boolean,
     default: false
   }

@@ -19,10 +19,12 @@ router.post('/animais',authToken.opcional, async (req, res) => {
       path: 'responsavel',
       select: '_id'
     }
-    query.especie = (req.body.especie)?req.body.especie:undefined
-    query.porte = (req.body.porte)?req.body.porte:undefined
-    query.idade.$gte = (req.body.minIdade)?req.body.minIdade:undefined
-    query.idade.$lte = (req.body.maxIdade)?req.body.maxIdade:undefined
+
+    //pesquisa de animais
+    query.especie = (req.body.especie)?req.body.especie:undefined // select de especie
+    query.porte = (req.body.porte)?req.body.porte:undefined // select deporte
+    query.idade.$gte = (req.body.minIdade)?req.body.minIdade:undefined //minimo de idade
+    query.idade.$lte = (req.body.maxIdade)?req.body.maxIdade:undefined // máximo de idade
 
     if(req.data){
 
@@ -88,10 +90,12 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
       select: '_id'
     }
 
-    query.nome = (req.body.nome)?{$regex: req.body.nome}:undefined
-    query.local  = (req.body.local)?{$regex: req.body.local}:undefined
-    query.especie = (req.body.especie)?req.body.especie:undefined
-    query.data = {$gte: Date.now()}
+    //pesquisa de evento
+    query.nome = (req.body.nome)?{$regex: req.body.nome}:undefined // input text de nome
+    query.local  = (req.body.local)?{$regex: req.body.local}:undefined // input text de local
+    query.especie = (req.body.especie)?req.body.especie:undefined // select de especies
+    query.data = {$gte: Date.now()} // não precisa
+    query.verificado = true // não precisa
 
     if(req.data){
       var user = await Usuarios.findOne({_id: req.data.id})

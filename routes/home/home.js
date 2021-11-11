@@ -18,7 +18,7 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
     var animais
 
     if(!req.data){
-      animais = await Animais.find().sort({data: 1}).limit(8)
+      animais = await Animais.find().sort({data: 1}).limit(req.body.carouselCount)
     }else{
       console.log("data: " + req.data)
       var user = await Usuarios.findOne({_id: req.data.id})
@@ -58,10 +58,87 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
         },
         select: "_id"
       })
-      .select("_id nome foto").sort({data: 1}).limit(8)
+      .select("_id nome foto").sort({data: 1}).limit(req.body.carouselCount)
     }
 
     console.log('animaisdo carrosel foram listados')
+
+    res.status(200).send({
+      msg: "animais listados com sucesso",
+      animais
+    })
+
+  }catch(e){
+
+    console.log('erro ao listar animais do carrosseul ' + e)
+
+    res.status(500).send({
+      msg: "erro ao listar animais do carrossel"
+    })
+
+  }
+
+})
+
+router.post('/maisAnimais', authToken.opcional, async (req, res) => {
+
+  try{
+
+    var animais
+
+    if(!req.data){
+      animais = await Animais.find()
+      .sort({data: 1})
+      .skip(req.body.pag * req.body.quant + req.body.carouselCount)
+      .limit(req.body.quant)
+    }else{
+      console.log("data: " + req.data)
+      var user = await Usuarios.findOne({_id: req.data.id})
+      animais = await Animais.find({
+        responsavel: {
+          $ne: req.data.id
+        }
+      })
+      .populate({
+        path: "responsavel",
+        match: {
+          $or: [
+            {
+              ddd1: {
+                $gte: user.ddd1 - config.searchRange,
+                $lte: user.ddd1 + config.searchRange
+              }
+            },
+            {
+              ddd2: {
+                $gte: user.ddd1 - config.searchRange,
+                $lte: user.ddd1 + config.searchRange
+              }
+            },
+            {
+              ddd1: {
+                $gte: user.ddd2 - config.searchRange,
+                $lte: user.ddd2 + config.searchRange
+              }
+            },
+            {
+              ddd2: {
+                $gte: user.ddd2 - config.searchRange,
+                $lte: user.ddd2 + config.searchRange
+              }
+            }
+          ]
+        },
+        select: "_id"
+      })
+      .select("_id nome foto")
+      .sort({data: 1})
+      .skip(req.body.pag * req.body.quant + req.body.carouselCount)
+      .limit(req.body.quant)
+    }
+
+    console.log('animaisdo carrosel foram listados')
+    console.log(req.body)
 
     res.status(200).send({
       msg: "animais listados com sucesso",
@@ -85,7 +162,12 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
     var eventos
 
     if(!req.data){
-      eventos = await Eventos.find({data: {$gte: Date.now()}}).sort({data: 1}).limit(5)
+      eventos = await Eventos.find({
+        data: {
+          $gte: Date.now()
+        }, 
+        verificado: true
+      }).sort({data: 1}).limit(req.body.carouselCount)
     }else{
       console.log("data: " + req.data)
       var user = await Usuarios.findOne({_id: req.data.id})
@@ -95,7 +177,8 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
         },
         data: {
           $gt: Date.now()
-        }
+        },
+        verificado: true
       }).populate({
         path: "responsavel",
         match: {
@@ -128,13 +211,14 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
         },
         select: "_id"
       })
-      .select("banner").sort({data: 1}).limit(5)
+      .select("banner").sort({data: 1}).limit(req.body.carouselCount)
     }
 
     console.log("eventos listados com sucesso")
 
     res.status(200).send({
-      msg: "eventos listados com sucesso"
+      msg: "eventos listados com sucesso",
+      eventos
     })
   }catch(e){
     console.log(`erro ao listar eventos:::${e}`)

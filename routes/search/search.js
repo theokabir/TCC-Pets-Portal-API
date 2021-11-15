@@ -19,18 +19,23 @@ router.post('/animais',authToken.opcional, async (req, res) => {
       path: 'responsavel',
       select: '_id'
     }
+    var select = "nome foto observacao _id"
 
     //pesquisa de animais
-    query.especie = (req.body.especie)?req.body.especie:undefined // select de especie
-    query.porte = (req.body.porte)?req.body.porte:undefined // select deporte
-    query.idade.$gte = (req.body.minIdade)?req.body.minIdade:undefined //minimo de idade
-    query.idade.$lte = (req.body.maxIdade)?req.body.maxIdade:undefined // máximo de idade
+    
+    if (req.body.especie)
+      query.especie = req.body.especie
+    if (req.body.porte)
+      query.porte = req.body.porte// select deporte
+    query.idade = {}
+    query.idade.$gte = (req.body.minIdade)?req.body.minIdade:0 //minimo de idade
+    query.idade.$lte = (req.body.maxIdade)?req.body.maxIdade:1000 // máximo de idade
 
     if(req.data){
 
       var user = await Usuarios.findOne({_id: req.data.id})
 
-      query.responsavel = {$ne: req.body.id}
+      query.responsavel = {$ne: req.data.id}
 
       populate.match = {
         $or: [
@@ -63,7 +68,8 @@ router.post('/animais',authToken.opcional, async (req, res) => {
     }
 
     var animais = await Animais.find(query).populate(populate)
-    .skip(req.body.skip || 0).limit(req.body.limit || 0)
+    .select(select).sort({data: 1})
+    .skip(req.body.skip || 0).limit(req.body.limit || 10)
 
     console.log("animais listados")
 

@@ -5,12 +5,8 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
-/**
- * MONGO_URI
- * TOKEN_TIME
- * TOKEN_KEY
-*/
 const dotenv = require('dotenv')
+const validation = require('./middlewares/validations')
 
 //models
 //"tabelas" do mongo db
@@ -37,6 +33,7 @@ const animaisRouter = require('./routes/animais/animais')
 const eventsRouter = require('./routes/eventos/eventos')
 const homeRouter = require('./routes/home/home')
 const searchRouter = require('./routes/search/search')
+const { application } = require('express')
 
 //configurações
 //configurações importantes para o servidor
@@ -124,6 +121,42 @@ app.post('/getId', authToken.opcional, (req, res) => {
     res.status(200).send({
       msg: "id requisitado com sucesso",
       id: req.data.id
+    })
+  }
+})
+
+app.post('/validEmail', (req, res) => {
+  if (validation.email(req.body.email)){
+    res.status(200).send({
+      msg: "email válido"
+    })
+  }else{
+    res.status(401).send({
+      msg: "email inválido ou já utilizado"
+    })
+  }
+})
+
+app.post('/validSenha', (req, res) => {
+  if (validation.senha(req.body.email)){
+    res.status(200).send({
+      msg: "senha válida"
+    })
+  }else{
+    res.status(401).send({
+      msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres"
+    })
+  }
+})
+
+app.post('/validCpf', (req, res) => {
+  if (validation.cpf(req.body.email)){
+    res.status(200).send({
+      msg: "cpf válido"
+    })
+  }else{
+    res.status(401).send({
+      msg: "cpf inválido ou já utilizado"
     })
   }
 })

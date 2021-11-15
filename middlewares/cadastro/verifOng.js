@@ -1,4 +1,6 @@
 const fs = require('fs')
+const validation = require('./../validations')
+const gcs = require('./../gcs')
 
 const verifOng = (req, res, next) => {
   var dataUsuario = {
@@ -23,7 +25,7 @@ const verifOng = (req, res, next) => {
     dataUsuario.endereco &&
     dataUsuario.tel1 &&
     dataUsuario.desc &&
-    req.file
+    req.newFile
     )
   {
 
@@ -32,44 +34,31 @@ const verifOng = (req, res, next) => {
       res.status(401).send({
         msg: "senhas não compativeis"
       })
-     else {
-       req.newUser = dataUsuario
-       next()
-     }
+    else {
+
+      if (!validation.email(dataUsuario.email))
+        res.status(401).send({
+          msg: "email invalido ou já utilizado"
+        })
+      if(!validation.senha(dataUsuario.senha))
+        res.status(401).send({
+          msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres"
+        })
+      else{
+        req.newUser = dataUsuario
+        next()
+      }
+
+    }
 
   }
   else {
 
-    console.log("file: " + req.file)
-
-    if ( req.file ){
-
-      try {
-        fs.unlink(req.file.path, err => {
-          if (err)
-            res.status(500).send({
-              msg: "erro ao exluir arquivo, arquivo não existente",
-              err: err
-            })
-          else{
-            res.status(401).send({
-              msg: "erro ao criar usuário, falta de dados e foto excluida com sucesso"
-            })
-          }
-        })
-      }
-      catch (err) {
-        res.status(500).status({
-          msg: 'erro ao remoover arquivo de foto, não existente'
-        })
-      }
-
-    } else{
-      res.status(401).send({
-        msg: "falta de informação obrigaória",
-        data: dataUsuario
-      })
-    }
+    gcs.delete(req.newFile)
+    
+    res.status(401).send({
+      msg: "erro ao criar usuário, falta de dados e foto excluida com sucesso"
+    })
 
   }
 }

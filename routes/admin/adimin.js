@@ -7,10 +7,12 @@
 const express = require('express')
 const router = express.Router()
 
-const listRouter = require('./list')
-const showRouter = require('./show')
+const validateOngRouter = require('./validOng')
+const adocoesRouter = require('./listAdocoes')
+const validEventosRouter = require('./validEvento')
 
-router.use("/list",listRouter)
-router.use("/show", showRouter)
+router.use('/validate/ong', validateOngRouter)
+router.use('/validate/eventos', validEventosRouter)
+router.use('adocoes', adocoesRouter)
 
 module.exports = router

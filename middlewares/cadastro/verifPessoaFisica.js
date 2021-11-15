@@ -31,8 +31,21 @@ const verifPessoaFisica = (req, res, next) => {
         msg: "senhas não compatíveis"
       })
 
-    else req.newUser = dataUsuario
-    next()
+    else {
+
+      if (!validation.email(dataUsuario.email))
+      res.status(401).send({
+        msg: "email invalido ou já utilizado"
+      })
+      if(!validation.senha(dataUsuario.senha))
+        res.status(401).send({
+          msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres"
+      })
+      else{
+        req.newUser = dataUsuario
+        next()
+      }
+    }
 
   }
   else{

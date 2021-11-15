@@ -95,11 +95,15 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
       path: 'responsavel',
       select: '_id'
     }
+    var select = "_id banner data local nome"
 
-    //pesquisa de evento
-    query.nome = (req.body.nome)?{$regex: req.body.nome}:undefined // input text de nome
-    query.local  = (req.body.local)?{$regex: req.body.local}:undefined // input text de local
-    query.especie = (req.body.especie)?req.body.especie:undefined // select de especies
+    //pesquisa deEvento
+    if (req.body.nome) 
+      query.nome = {$regex: req.body.nome}
+    if (req.body.local)
+      query.local = {$regex: req.body.local} 
+    if (req.body.especie)
+      query.especie = req.body.especie 
     query.data = {$gte: Date.now()} // não precisa
     query.verificado = true // não precisa
 
@@ -138,7 +142,8 @@ router.post('/eventos', authToken.opcional, async (req, res) => {
       }
     }
 
-    var eventos = await Eventos.find(query).populate(populate)
+    var eventos = await Eventos.find(query)
+    .populate(populate).select(select)
     .skip(req.body.skip || 0).limit(req.body.limit || 0)
 
     console.log("eventos listados com sucesso")

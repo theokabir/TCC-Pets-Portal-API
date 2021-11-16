@@ -13,6 +13,6 @@ const validEventosRouter = require('./validEvento')
 
 router.use('/validate/ong', validateOngRouter)
 router.use('/validate/eventos', validEventosRouter)
-router.use('adocoes', adocoesRouter)
+router.use('/adocoes', adocoesRouter)
 
 module.exports = router

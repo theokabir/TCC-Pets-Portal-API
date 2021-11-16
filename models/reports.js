@@ -12,6 +12,10 @@ const reportsSchema = new Schema({
     ref: 'usuarios',
     required:true
   },
+  animal: {
+    type: Schema.Types.ObjectId,
+    ref: "animais"
+  },
   texto: {
     type: String,
     required:true

@@ -5,13 +5,13 @@ const adocaoSchema = new Schema({
 
     adotante: {
         type: Schema.Types.ObjectId,
-        ref: "usuario",
+        ref: "usuarios",
         required: true
     },
 
     doador: {
         type: Schema.Types.ObjectId,
-        ref: "usuario",
+        ref: "usuarios",
         required: true
     },
 

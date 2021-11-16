@@ -72,6 +72,7 @@ router.post('/animais',authToken.opcional, async (req, res) => {
     .skip(req.body.skip || 0).limit(req.body.limit || 10)
 
     console.log("animais listados")
+    console.log(req.body)
 
     res.status(200).send({
       msg: "animais listados",

@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const authToken = require('./../../middlewares/authToken')
 
 require('./../../models/adocoes')
+require('./../../models/usuarios')
 const Usuarios = mongoose.model('usuarios')
 const Adocoes = mongoose.model('adocoes')
 
@@ -11,7 +12,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
   try{
 
-    var admin = Usuarios.findOne({_id: req.data.id})
+    var admin = await Usuarios.findOne({_id: req.data.id})
     if (admin.tipo != "adm"){
       var err = {
         code: 401,
@@ -20,9 +21,11 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var adocoes = Adocoes.find().sort({data: -1}).skip(req.body.skip || 0).limit(req.body.limit || 1000)
-
-    console.log(`adoções listadas com sucesso`)
+    var adocoes = await Adocoes.find()
+    .populate({path: 'adotante', select: 'nome'})
+    .populate({path: 'doador', select: 'nome'})
+    .populate({path: 'animal', select: 'nome foto'})
+    .sort({data: -1}).skip(req.body.skip || 0).limit(req.body.limit || 10)
 
     res.status(200).send({
       msg: "adoções listadascom sucesso",

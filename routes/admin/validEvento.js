@@ -13,7 +13,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
   try{
 
-    var user = Usuarios.findOne({_id: reqq.data.id})
+    var user = await Usuarios.findOne({_id: req.data.id})
     if (user.tipo != "adm"){
       var err = {
         code: 401,
@@ -22,7 +22,22 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var eventos = Eventos.find({verifficado: false})
+    var query = {
+      verificado: false
+    }
+
+    if(req.body.nome)
+      query.nome = {
+        $regex: req.body.nome.replace(/\s+/g, ' ').trim(),
+        $options: 'i'
+      }
+    if(req.body.local)
+      query.local = {
+        $regex: req.body.local.replace(/\s+/g, ' ').trim(),
+        $options: 'i'
+      }
+
+    var eventos = await Eventos.find(query)
     .skip(req.body.skip || 0).limit(req.body.limit || 1000)
 
     console.log(`eventos listados como sucesso`)
@@ -47,7 +62,7 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
 
   try{
 
-    var user = Usuarios.findOne({_id: reqq.data.id})
+    var user = await Usuarios.findOne({_id: req.data.id})
     if (user.tipo != "adm"){
       var err = {
         code: 401,
@@ -56,7 +71,8 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var evento = Eventos.findOne({_id: req.body.evento})
+    var evento = await Eventos.findOne({_id: req.body.evento})
+    .skip(req.body.skip || 0).limit(req.body.limit || 10)
     evento.verificado = true
     evento.save()
 

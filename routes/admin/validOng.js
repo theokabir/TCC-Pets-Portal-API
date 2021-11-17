@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const authToken = require('./../../middlewares/authToken')
 
 require('./../../models/usuarios')
-//require('./../../models/usuarios_subSchemas/ong')
+require('./../../models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
 const Ongs = mongoose.model('ongs')
 
@@ -13,8 +13,9 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
   try{
 
-    var admin = Usuarios.find({_id: req.data.id})
+    var admin = await Usuarios.findOne({_id: req.data.id})
     if (admin.tipo != "adm"){
+      console.log(admin)
       var err ={
         code: 401,
         msg: "usuário não é o administrador"
@@ -22,10 +23,31 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var ongs = Usuarios.find({tipo: "ong"}).populate({
-      path: "ong",
-      match: {verificado:  false}
-    })
+    var query = {
+      tipo: "ong"
+    }
+
+    if(req.body.nome)
+      query.nome = {
+        $regex: req.body.nome.replace(/\s+/g, ' ').trim(),
+        $options: 'i'
+      }
+
+    var ongs = []
+    
+    var limit = (query.nome)?1000:req.body.limit||10
+
+    for(var i = 0; i < limit; i++){
+
+      var skip = (req.body.skip || 0) + i
+      var ong = await Usuarios.findOne(query).skip(skip)
+      .populate({
+        path: "ong"
+      })
+
+      if(!ong) break
+      if(ong.ong.verificado == false) ongs.push(ong)
+    }
 
     console.log("ongs não verificadas foram listadas")
 
@@ -50,7 +72,7 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
 
   try{
 
-    var admin = Usuarios.findOne({_id: req.data.id})
+    var admin = await Usuarios.findOne({_id: req.data.id})
 
     if (admin.tipo != "adm"){
       var err = {
@@ -60,8 +82,8 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var user = Usuarios.find({_id: req.body.ong, tipo: "ong"})
-    var ong = Ongs.findOne({_id: user.ong})
+    var user = await Usuarios.findOne({_id: req.body.ong, tipo: "ong"})
+    var ong = await Ongs.findOne({_id: user.ong})
 
     ong.verificado = true
 

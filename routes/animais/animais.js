@@ -6,7 +6,9 @@ const authToken = require("./../../middlewares/authToken")
 require('./../../models/animais')
 require('./../../models/adocoes')
 require('./../../models/usuarios')
+require('./../../models/reports')
 const Animais = mongoose.model('animais')
+const Reports = mongoose.model('reports')
 const Usuarios = mongoose.model('usuarios')
 const Adocoes = mongoose.model('adocoes')
 
@@ -36,12 +38,17 @@ router.post('/:id', authToken.obrigatorio, async (req, res) => {
             select: "_id imagem"
         })
         var me = animal.responsavel._id == req.data.id
+        var admin = await Usuarios.findOne({_id: req.data.id})
+        if(admin.tipo == "adm"){
+            var reports = await Reports.find({animal: req.params.id})
+        }
         if (me){
             //TODO: edição de pedidos
         }
         res.status(200).send({
             animal,
-            me
+            me,
+            reports: reports || undefined
         })
 
     }catch(e){

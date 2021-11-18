@@ -18,14 +18,15 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
     var animais
 
     if(!req.data){
-      animais = await Animais.find().sort({data: 1}).limit(req.body.carouselCount)
+      animais = await Animais.find({habilitado: true}).sort({data: 1}).limit(req.body.carouselCount)
     }else{
       console.log("data: " + req.data)
       var user = await Usuarios.findOne({_id: req.data.id})
       animais = await Animais.find({
         responsavel: {
           $ne: req.data.id
-        }
+        },
+        habilitado: true
       }).populate({
         path: "responsavel",
         match: {
@@ -87,7 +88,7 @@ router.post('/maisAnimais', authToken.opcional, async (req, res) => {
     var animais
 
     if(!req.data){
-      animais = await Animais.find()
+      animais = await Animais.find({habilitado: true})
       .sort({data: 1})
       .skip(req.body.pag * req.body.quant + req.body.carouselCount)
       .limit(req.body.quant)
@@ -97,7 +98,8 @@ router.post('/maisAnimais', authToken.opcional, async (req, res) => {
       animais = await Animais.find({
         responsavel: {
           $ne: req.data.id
-        }
+        },
+        habilitado: true
       })
       .populate({
         path: "responsavel",

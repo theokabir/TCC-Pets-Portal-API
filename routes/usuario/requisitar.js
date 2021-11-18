@@ -85,7 +85,7 @@ router.post('/',authToken.opcional, async (req, res) => {
         if(req.data){
           var admin = await Usuarios.findOne({_id: req.data.id})
           if (admin.tipo == "adm"){
-            var reports = await Reports.find({usuario: user._id})
+            var reports = await Reports.find({usuario: user._id}).sort({contagem: "asc"})
           }
         }
       }catch(e){

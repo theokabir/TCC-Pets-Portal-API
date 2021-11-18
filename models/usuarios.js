@@ -67,6 +67,10 @@ const usuarioSchema = new Schema({
     ong: {
         type: Schema.Types.ObjectId,
         ref: "ongs"
+    },
+    banido: {
+        type: Boolean,
+        default: false
     }
 
 })

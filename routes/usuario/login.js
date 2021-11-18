@@ -27,8 +27,6 @@ router.post('/', (req, res) => {
         msg: "usuário não encontrado"
       })
     }
-
-    // email encontrado
     bcrypt.compare(senha, user.senha, (err, result) => {
       if (err) {
         console.log(`erro ao comparar senhas ::: ${err}`)
@@ -39,17 +37,26 @@ router.post('/', (req, res) => {
       else if(result) {
         
         // * senha correta
-        var tokenInfo = {
-          id: user._id,
-          emal: user.email
-        }
-        
-        var token = genToken(tokenInfo)
 
-        res.status(200).send({
-          msg: "usuário logado com sucesso",
-          token
-        })
+        // email encontrado
+        if(user.banido){
+          console.log("usuário banido")
+          res.status(401).send({
+            msg: "usuário banido"
+          })
+        }else{
+          var tokenInfo = {
+            id: user._id,
+            emal: user.email
+          }
+          
+          var token = genToken(tokenInfo)
+  
+          res.status(200).send({
+            msg: "usuário logado com sucesso",
+            token
+          })
+        }
         
       }
       else{

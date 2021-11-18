@@ -23,38 +23,56 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
       throw err
     }
 
-    var query = {
-      tipo: "ong"
-    }
+    // var query = {
+    //   tipo: "ong"
+    // }
 
-    if(req.body.nome)
-      query.nome = {
-        $regex: req.body.nome.replace(/\s+/g, ' ').trim(),
-        $options: 'i'
-      }
+    // if(req.body.nome)
+    //   query.nome = {
+    //     $regex: req.body.nome.replace(/\s+/g, ' ').trim(),
+    //     $options: 'i'
+    //   }
 
-    var ongs = []
+    // var ongs = []
     
-    var limit = (query.nome)?1000:req.body.limit||10
+    // var limit = (query.nome)?1000:req.body.limit||10
 
-    for(var i = 0; i < limit; i++){
+    // for(var i = 0; i < limit; i++){
 
-      var skip = (req.body.skip || 0) + i
-      var ong = await Usuarios.findOne(query).skip(skip)
-      .populate({
-        path: "ong"
-      })
+    //   var skip = (req.body.skip || 0) + i
+    //   var ong = await Usuarios.findOne(query).skip(skip)
+    //   .populate({
+    //     path: "ong",
+    //     select: 'estadoSocial'
+    //   }).select('nome imagem email')
 
-      if(!ong) break
-      if(ong.ong.verificado == false) ongs.push(ong)
-    }
+    //   console.log(query)
+    //   if(!ong) break
+    //   if(ong.ong.verificado == false) ongs.push(ong)
+    // }
 
-    console.log("ongs não verificadas foram listadas")
-
-    res.status(200).send({
-      msg: "ongs listadas com sucesso",
-      ongs
+    await Usuarios.find({tipo: 'ong'})
+    .populate({
+      path: "ong",
+      select: 'estadoSocial verificado'
     })
+    .exec((err, ongsRes)=>{
+
+      if (err){
+        var err = {
+          msg: "erro ao filtrar por ongs não verificadas"
+        }
+      } 
+
+      var ongs = ongsRes.filter(ong => ong.ong.verificado == true)
+      console.log("ongs não verificadas foram listadas")
+  
+      res.status(200).send({
+        msg: "ongs listadas com sucesso",
+        ongs
+      })
+    })
+    
 
   }catch(e){
 

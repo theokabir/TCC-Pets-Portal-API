@@ -59,6 +59,11 @@ const animaisSchema = new Schema({
     data: {
         type: Date,
         default: Date.now()
+    },
+
+    habilitado: {
+        type: Boolean,
+        default: true
     }
 
 })

@@ -38,6 +38,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
       }
 
     var eventos = await Eventos.find(query)
+    .select('banner data local nome observacao responsavel')
     .skip(req.body.skip || 0).limit(req.body.limit || 1000)
 
     console.log(`eventos listados como sucesso`)

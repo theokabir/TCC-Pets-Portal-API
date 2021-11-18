@@ -14,7 +14,9 @@ const Eventos = mongoose.model('eventos')
 router.post('/animais',authToken.opcional, async (req, res) => {
   try{
     
-    var query = {}
+    var query = {
+      habilitado: true
+    }
     var populate = {
       path: 'responsavel',
       select: '_id'

@@ -18,10 +18,12 @@ require('./../../models/usuarios_subSchemas/fisico')
 require('./../../models/usuarios_subSchemas/ong')
 require('./../../models/animais')
 require('./../../models/eventos')
+require('./../../models/reports')
 //require('./../../models/pedidos')
 const Usuarios = mongoose.model('usuarios')
 const Animais = mongoose.model('animais')
 const Eventos = mongoose.model('eventos')
+const Reports = mongoose.model('reports')
 //const Pedidos = mongoose.model('pedidos')
 //const Ongs = mongoose.model('ongs')
 
@@ -79,7 +81,17 @@ router.post('/',authToken.opcional, async (req, res) => {
           //var pedidos = await Pedidos.find({adotante: user._id}) 
         }
         var eventos = await Eventos.find({responsavel: user._id}).select("-editado")
+
+        if(req.data){
+          var admin = await Usuarios.findOne({_id: req.data.id})
+          if (admin.tipo == "adm"){
+            var reports = await Reports.find({usuario: user._id})
+          }
+        }
       }catch(e){
+
+        
+
         console.log(`erro ao listar animais ou mensagens:::${e}`)
 
         res.status(500).send({
@@ -91,7 +103,8 @@ router.post('/',authToken.opcional, async (req, res) => {
         me,
         user,
         animais,
-        eventos
+        eventos,
+        reports: reports || []
       })
     }
 

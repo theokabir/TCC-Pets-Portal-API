@@ -1,3 +1,5 @@
+const validation = require('./../validations')
+
 const verifPessoaFisica = (req, res, next) => {
   var dataUsuario = {
     nome: req.body.nome,
@@ -11,17 +13,21 @@ const verifPessoaFisica = (req, res, next) => {
     ddd2: req.body.tel2.slice(0, 2),
     nasc: req.body.nasc,
     cpf: req.body.cpf,
-    desc: req.body.desc
+    desc: req.body.desc,
+    pergunta: req.body.pergunta,
+    resposta: req.body.resposta
   }
 
   if (
-    // * verificação dos dados da ong
+    // * verificação dos dados da pessoa física
     dataUsuario.nome &&
     dataUsuario.email &&
     dataUsuario.senha &&
     dataUsuario.senha2 &&
     dataUsuario.endereco &&
-    dataUsuario.tel1 
+    dataUsuario.tel1  &&
+    dataUsuario.pergunta &&
+    dataUsuario.resposta
   ){
 
     

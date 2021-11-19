@@ -1,4 +1,3 @@
-const fs = require('fs')
 const validation = require('./../validations')
 const gcs = require('./../gcs')
 
@@ -13,7 +12,9 @@ const verifOng = (req, res, next) => {
     ddd1: req.body.tel1.slice(0, 2),
     tel2: req.body.tel2.slice(2),
     ddd2: req.body.tel2.slice(0, 2),
-    desc: req.body.desc
+    desc: req.body.desc,
+    pergunta: req.body.pergunta,
+    resposta: req.body.resposta
   }
 
   if (
@@ -24,26 +25,34 @@ const verifOng = (req, res, next) => {
     dataUsuario.senha2 &&
     dataUsuario.endereco &&
     dataUsuario.tel1 &&
-    dataUsuario.desc &&
+    dataUsuario.desc  &&
+    dataUsuario.pergunta &&
+    dataUsuario.resposta &&
     req.newFile
     )
   {
 
 
-    if (dataUsuario.senha !== dataUsuario.senha2)
+    if (dataUsuario.senha !== dataUsuario.senha2){
+      console.log('senhas incompatíveis')
       res.status(401).send({
         msg: "senhas não compativeis"
       })
+    }
     else {
 
-      if (!validation.email(dataUsuario.email))
+      if (!validation.email(dataUsuario.email)){
+        console.log('email não á valido')
         res.status(401).send({
           msg: "email invalido ou já utilizado"
         })
-      if(!validation.senha(dataUsuario.senha))
+      }
+      if(!validation.senha(dataUsuario.senha)){
+        console.log('senha não contem as especificações necessárias')
         res.status(401).send({
           msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres"
         })
+      }
       else{
         req.newUser = dataUsuario
         next()

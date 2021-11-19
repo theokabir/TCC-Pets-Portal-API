@@ -34,6 +34,7 @@ const eventsRouter = require('./routes/eventos/eventos')
 const homeRouter = require('./routes/home/home')
 const searchRouter = require('./routes/search/search')
 const reportsRouter = require('./routes/reports/reports')
+const recoverRouter = require('./routes/recover/recover')
 
 //configurações
 //configurações importantes para o servidor
@@ -77,6 +78,7 @@ app.use("/events", eventsRouter)
 app.use("/home", homeRouter)
 app.use("/search", searchRouter)
 app.use("/reports", reportsRouter)
+app.use("/recover", recoverRouter)
 
 //rotas da raiz
 app.get("/", (req, res)=>{

@@ -19,10 +19,11 @@ router.post('/', (req, res) => {
   var email = req.body.email
   var senha = req.body.senha
 
-  Usuarios.findOne({email: email})
+  Usuarios.findOne({email: email}).select('+senha')
   .then(user => {
 
     if(!user){
+      console.log('a')
       res.status(401).send({
         msg: "usuário não encontrado"
       })
@@ -60,6 +61,7 @@ router.post('/', (req, res) => {
         
       }
       else{
+        console.log('b')
         res.status(401).send({
           msg: "senha incorreta"
         })

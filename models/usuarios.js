@@ -18,7 +18,7 @@ const usuarioSchema = new Schema({
     senha: {
         type: String,
         required: true,
-        selec: false
+        select: false
     },
 
     endereco: {
@@ -71,6 +71,16 @@ const usuarioSchema = new Schema({
     banido: {
         type: Boolean,
         default: false
+    },
+    pergunta: {
+        type: String,
+        required: true,
+        select: false
+    },
+    resposta: {
+        type: String,
+        required: true,
+        select: false
     }
 
 })

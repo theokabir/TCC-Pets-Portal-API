@@ -59,38 +59,52 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
                 }
                 else{
 
-                    req.newUser.senha = hash
+                    bcrypt.hash(req.newUser.resposta, 10, async (errBcrypt2, hash2) => {
 
-                    var fisico, newUser
+                        if(errBcrypt2){
+                            console.log("Erro ao encriptar resposta de pergunta de recuperação")
 
-                    try {
-
-                        fisico = await new Fisico(req.newUser).save()
-                        req.newUser.fisico = fisico._id
-                        newUser = await new Usuarios(req.newUser).save()
-
-                        console.log(`Novo usuário criado::::\n${newUser}`)
-
-                        res.status(200).send({
-                            msg: "Novo usuário criado"
-                        })
-
-                    }catch(e){
-
-                        try{
-                            Fisico.deleteOne({_id: fisico._id})
-                            Usuarios.deleteOne({_id: newUser._id})
-                        }catch(e){
-
+                            res.status(500).send({
+                                msg: "Erro ao encriptar dados"
+                            })
+                        }else{
+                            req.newUser.senha = hash
+                            req.newUser.resposta = hash2
+        
+                            var fisico, newUser
+        
+                            try {
+        
+                                fisico = await new Fisico(req.newUser).save()
+                                req.newUser.fisico = fisico._id
+                                newUser = await new Usuarios(req.newUser).save()
+        
+                                console.log(`Novo usuário criado::::\n${newUser}`)
+        
+                                res.status(200).send({
+                                    msg: "Novo usuário criado"
+                                })
+        
+                            }catch(e){
+        
+                                try{
+                                    Fisico.deleteOne({_id: fisico._id})
+                                    Usuarios.deleteOne({_id: newUser._id})
+                                }catch(e){
+        
+                                }
+        
+                                console.log(`erro ao criar usuário:::${e}`)
+        
+                                res.status(500).send({
+                                    msg: "erro ao criar usuário de pessoa física"
+                                })
+                            }
                         }
 
-                        console.log(`erro ao criar usuário:::${e}`)
+                    })
 
-                        res.status(500).send({
-                            msg: "erro ao criar usuário de pessoa física"
-                        })
-
-                    }
+                }
 
                     // new Fisico(req.newUser).save()
                     // .then(newPessoaFisica=> {
@@ -122,7 +136,6 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
                     //     })
                     // })
 
-                }
             })
 
         }
@@ -140,7 +153,7 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
 
 })
 
-router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=>{
+router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng, async (req, res)=>{
 
     req.newUser.estadoSocial = req.newFile
     Usuarios.find().or([
@@ -148,7 +161,7 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=
         {tel1: req.newUser.tel1},
         {tel2: req.newUser.tel2}
     ])
-    .then(user => {
+    .then(async user => {
 
         if(user.length > 0){
             console.log(`Usuário já registrado:: ${user}`)
@@ -160,7 +173,7 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=
         else{
             // * sucesso na verificação dos dados
 
-            bcrypt.hash(req.newUser.senha, 10, (errBcrypt, hash) => {
+            bcrypt.hash(req.newUser.senha, 10, async (errBcrypt, hash) => {
                 if (errBcrypt) {
                     res.status(500).send({
                         msg: "Erro ao encriptar dados"
@@ -168,10 +181,13 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng,(req, res)=
                 }
                 else{
 
+                    var newResposta = await bcrypt.hashSync(req.newUser.resposta, 10)
+
                     req.newUser.senha = hash
+                    req.newUser.resposta = newResposta
 
                     new Ong(req.newUser).save()
-                    .then(ong => {
+                    .then(async ong => {
                         req.newUser.tipo = "ong"
                         req.newUser.ong = ong._id
     

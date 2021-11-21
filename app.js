@@ -12,10 +12,10 @@ const validation = require('./middlewares/validations')
 //"tabelas" do mongo db
 require('./models/usuarios')
 //require('./models/usuarios_subSchemas/fisico')
-//require('./models/usuarios_subSchemas/ong')
+require('./models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
 //const Fisicos = mongoose.model('fisicos')
-//const Ongs = mongoose.model('ongs')
+const Ongs = mongoose.model('ongs')
 
 //variaveis
 //aqui são declaradas variáveis importantes para o funcionamento do algoritmo
@@ -98,6 +98,14 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
       user.id = req.data.id
       user.nome = userRes.nome
       user.img = userRes.imagem
+
+      if (userRes.tipo == "ong"){
+        var ong = await Ongs.findOne({_id: userRes.ong})
+        user.verificado = ong.verificado
+      }else{
+        user.verificado = false
+      }
+
     })
     .catch(e => {
       console.log(`erro ao encontrar usuário na validação do token\nerro:::${e}`)

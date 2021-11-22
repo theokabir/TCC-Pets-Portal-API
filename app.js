@@ -140,11 +140,13 @@ app.post('/validEmail', async (req, res) => {
   var test = await Usuarios.find({email: req.body.email})
   if (validation.email(req.body.email) && test.length == 0){
     res.status(200).send({
-      msg: "email válido"
+      msg: "email válido",
+      ok: true
     })
   }else{
     res.status(401).send({
-      msg: "email inválido ou já utilizado"
+      msg: "email inválido ou já utilizado",
+      ok: false
     })
   }
 })
@@ -152,11 +154,13 @@ app.post('/validEmail', async (req, res) => {
 app.post('/validSenha', (req, res) => {
   if (validation.senha(req.body.senha)){
     res.status(200).send({
-      msg: "senha válida"
+      msg: "senha válida",
+      ok: true
     })
   }else{
     res.status(401).send({
-      msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres"
+      msg: "senha deve conter: letras minúsculas, letras maiúsculas e pelo menos 8 caracteres",
+      ok: false
     })
   }
 })
@@ -165,11 +169,13 @@ app.post('/validCpf', async (req, res) => {
   var test = await Fisicos.find({cpf: req.body.cpf})
   if (validation.cpf(req.body.cpf) && test.length == 0){
     res.status(200).send({
-      msg: "cpf válido"
+      msg: "cpf válido",
+      ok: true
     })
   }else{
     res.status(401).send({
-      msg: "cpf inválido ou já utilizado"
+      msg: "cpf inválido ou já utilizado",
+      ok: false
     })
   }
 })

@@ -93,7 +93,7 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
   
   if (req.data) {
     await Usuarios.findOne({_id: req.data.id})
-    .then(userRes => {
+    .then(async userRes => {
       user.tipo = userRes.tipo
       user.id = req.data.id
       user.nome = userRes.nome

@@ -11,10 +11,10 @@ const validation = require('./middlewares/validations')
 //models
 //"tabelas" do mongo db
 require('./models/usuarios')
-//require('./models/usuarios_subSchemas/fisico')
+require('./models/usuarios_subSchemas/fisico')
 require('./models/usuarios_subSchemas/ong')
 const Usuarios = mongoose.model('usuarios')
-//const Fisicos = mongoose.model('fisicos')
+const Fisicos = mongoose.model('fisicos')
 const Ongs = mongoose.model('ongs')
 
 //variaveis
@@ -136,8 +136,9 @@ app.post('/getId', authToken.opcional, (req, res) => {
   }
 })
 
-app.post('/validEmail', (req, res) => {
-  if (validation.email(req.body.email)){
+app.post('/validEmail', async (req, res) => {
+  var test = await Usuarios.find({email: req.body.email})
+  if (validation.email(req.body.email) && test.length == 0){
     res.status(200).send({
       msg: "email válido"
     })
@@ -149,7 +150,7 @@ app.post('/validEmail', (req, res) => {
 })
 
 app.post('/validSenha', (req, res) => {
-  if (validation.senha(req.body.email)){
+  if (validation.senha(req.body.senha)){
     res.status(200).send({
       msg: "senha válida"
     })
@@ -160,8 +161,9 @@ app.post('/validSenha', (req, res) => {
   }
 })
 
-app.post('/validCpf', (req, res) => {
-  if (validation.cpf(req.body.email)){
+app.post('/validCpf', async (req, res) => {
+  var test = await Fisicos.find({cpf: req.body.cpf})
+  if (validation.cpf(req.body.cpf) && test.length == 0){
     res.status(200).send({
       msg: "cpf válido"
     })

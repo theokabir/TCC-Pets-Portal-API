@@ -65,6 +65,8 @@ router.post('/',authToken.opcional, async (req, res) => {
   if(req.data){
     Usuarios.findOne({_id: req.data.id})
     .then(user => {
+      console.log("acessando::::")
+      console.log(user)
       admin = user
     }).catch(e => {
       console.log('deu meio ruim')

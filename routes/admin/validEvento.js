@@ -73,7 +73,6 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
     }
 
     var evento = await Eventos.findOne({_id: req.body.evento})
-    .skip(req.body.skip || 0).limit(req.body.limit || 10)
     evento.verificado = true
     evento.save()
 
@@ -92,6 +91,36 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
 
   }
 
+})
+
+router.post('/excluir', authToken.obrigatorio, async (req, res) =>  {
+  try{
+    var admin = await Usuarios.findOne({_id: req.data.id})
+
+    if (admin.tipo != "adm"){
+      var err = {
+        code: 401,
+        msg: "usuário não é administrador para acessar essa função"
+      }
+      throw err
+    }
+
+    await Eventos.deleteOne({_id: req.body.evento})
+
+    console.log('evento deletado com sucesso')
+
+    res.status(200).send({
+      msg: "evento deletado com sucesso"
+    })
+
+  }catch(e){
+    console.log(`erro ao excluir evento:::${e.msg || e}`)
+
+    res.status(e.code || 500).send({
+      msg: "erro ao excluir evento"
+    })
+
+  }
 })
 
 module.exports = router

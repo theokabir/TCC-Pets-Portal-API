@@ -58,11 +58,20 @@ router.post('/',authToken.opcional, async (req, res) => {
     select = "nome email imagem tipo"
   }
 
+  var admin = {}
+
+  Usuarios.findOne({_id: req.data.id})
+  .then(user => {
+    admin = user
+  }).catch(e => {
+    console.log('deu meio ruim')
+  })
+
   Usuarios.findOne({_id: req.body.id}) 
   .select(select).populate(populateF).populate(populateO)
   .then(async user => {
     
-    if (user.tipo == "ong" && !user.ong.verificado && !me){
+    if (user.tipo == "ong" && !user.ong.verificado && !me && admin.tipo != "adm"){
 
       console.log(user)
 

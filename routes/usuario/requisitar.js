@@ -76,6 +76,9 @@ router.post('/',authToken.opcional, async (req, res) => {
   Usuarios.findOne({_id: req.body.id}) 
   .select(select).populate(populateF).populate(populateO)
   .then(async user => {
+
+    console.log("1: " + user.tipo)
+    console.log("2: " + admin.tipo)
     
     if (user.tipo == "ong" && !user.ong.verificado && !me && admin.tipo != "adm"){
 
@@ -98,8 +101,10 @@ router.post('/',authToken.opcional, async (req, res) => {
         var eventos = await Eventos.find({responsavel: user._id}).select("-editado")
 
         if(req.data){
-          var admin = await Usuarios.findOne({_id: req.data.id})
-          if (admin.tipo == "adm"){
+          var admin2 = await Usuarios.findOne({_id: req.data.id})
+          
+          console.log("3: " + admin2.tipo)
+          if (admin2.tipo == "adm"){
             var reports = await Reports.find({usuario: user._id}).sort({contagem: "asc"})
           }
         }

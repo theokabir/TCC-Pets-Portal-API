@@ -101,7 +101,10 @@ app.post('/navValidation', authToken.opcional, async (req, res) => {
 
       if (userRes.tipo == "ong"){
         var ong = await Ongs.findOne({_id: userRes.ong})
-        user.verificado = ong.verificado
+        if (ong) 
+          user.verificado = ong.verificado
+        else
+          user.verificado = false
       }else{
         user.verificado = false
       }

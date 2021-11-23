@@ -98,6 +98,9 @@ router.post('/excluir', authToken.obrigatorio, async (req, res) =>  {
     var admin = await Usuarios.findOne({_id: req.data.id})
     var evento = await Eventos.findOne({_id: req.body.evento})
 
+    console.log(admin)
+    console.log(evento)
+
     if (admin.tipo != "adm" && admin._id != evento.responsavel){
       var err = {
         code: 401,

@@ -96,8 +96,9 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
 router.post('/excluir', authToken.obrigatorio, async (req, res) =>  {
   try{
     var admin = await Usuarios.findOne({_id: req.data.id})
+    var evento = await Eventos.findOne({_id: req.body.evento})
 
-    if (admin.tipo != "adm"){
+    if (admin.tipo != "adm" && admin._id != evento.responsavel){
       var err = {
         code: 401,
         msg: "usuário não é administrador para acessar essa função"

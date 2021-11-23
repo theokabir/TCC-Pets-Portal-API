@@ -51,26 +51,19 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
     //   if(ong.ong.verificado == false) ongs.push(ong)
     // }
 
-    await Usuarios.find({tipo: 'ong'})
+    var ongsRes = await Usuarios.find({tipo: 'ong'})
     .populate({
       path: "ong",
       select: 'estadoSocial verificado'
     })
-    .exec((err, ongsRes)=>{
+    
 
-      if (err){
-        var err = {
-          msg: "erro ao filtrar por ongs não verificadas"
-        }
-      } 
+    var ongs = ongsRes.filter(ong => ong.ong.verificado == true)
+    console.log("ongs não verificadas foram listadas")
 
-      var ongs = ongsRes.filter(ong => ong.ong.verificado == true)
-      console.log("ongs não verificadas foram listadas")
-  
-      res.status(200).send({
-        msg: "ongs listadas com sucesso",
-        ongs
-      })
+    res.status(200).send({
+      msg: "ongs listadas com sucesso",
+      ongs
     })
     
 

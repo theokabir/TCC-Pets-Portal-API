@@ -64,10 +64,16 @@ router.post('/carousel', authToken.opcional, async (req, res) => {
 
     console.log('animaisdo carrosel foram listados')
 
-    res.status(200).send({
+    var msg = {
       msg: "animais listados com sucesso",
       animais
-    })
+    }
+
+    msg.logado = (req.data)?true:false
+
+    console.log("aaaaaaaaaaaa" + msg)
+
+    res.status(200).send(msg)
 
   }catch(e){
 
@@ -141,6 +147,7 @@ router.post('/maisAnimais', authToken.opcional, async (req, res) => {
 
     console.log('animaisdo carrosel foram listados')
     console.log(req.body)
+    
 
     res.status(200).send({
       msg: "animais listados com sucesso",

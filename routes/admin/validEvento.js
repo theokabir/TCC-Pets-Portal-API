@@ -101,12 +101,11 @@ router.post('/excluir', authToken.obrigatorio, async (req, res) =>  {
     console.log(admin._id)
     console.log(evento.responsavel)
 
-    var cond = admin.tipo != "adm" || admin._id != evento.responsavel
+    console.log(admin.tipo != "adm")
+    console.log(admin._id != evento.responsavel)
 
-    console.logg(cond)
 
-
-    if (admin.tipo != "adm" || admin._id != evento.responsavel){
+    if (!(admin.tipo != "adm" || admin._id != evento.responsavel)){
       var err = {
         code: 401,
         msg: "usuário não é administrador para acessar essa função"

@@ -60,6 +60,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
 
     var ongs = ongsRes.filter(ong => {
       console.log(ong)
+      if(!ong.ong) return false
       if(!ong.ong.verificado) return ong
     })
     console.log("ongs não verificadas foram listadas")

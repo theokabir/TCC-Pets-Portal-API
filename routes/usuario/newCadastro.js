@@ -58,7 +58,7 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
         console.log("4")
         var newSenha = await bcrypt.hashSync(req.newUser.senha, 10)
         console.log("5")
-        var newResposta = await bcrypt.hashSyc(req.body.resposta, 10)
+        var newResposta = await bcrypt.hashSync(req.body.resposta, 10)
 
         console.log("6")
         req.newUser.senha = newSenha

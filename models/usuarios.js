@@ -40,8 +40,7 @@ const usuarioSchema = new Schema({
 
     tel2: {
         type: Number,
-        required: false,
-        unique: true
+        required: false
     },
 
     ddd2: {

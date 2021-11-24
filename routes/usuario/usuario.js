@@ -8,7 +8,7 @@ const express = require('express')
 const router = express.Router()
 
 //importando os arquivos de rotas
-const cadastrarRouter = require('./cadastro')
+const cadastrarRouter = require('./newCadastro')
 const loginRouter = require('./login')
 const editRouter = require('./edicao')
 const readRouter = require('./requisitar')

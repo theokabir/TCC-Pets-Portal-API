@@ -34,6 +34,7 @@ router.post('/', (req, res)=>{
 router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
 
     try{
+        console.log("1")
         var other = await Usuarios.find({
             $or: [
                 {email: req.newUser.email},
@@ -41,8 +42,10 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
                 {tel2: req.newUser.tel2}
             ]
         })
+        console.log("2")
         var otherFisicos = await Fisicos.find({cpf: req.newUser.cpf})
 
+        console.log("3")
         if (other.length > 0 || otherFisicos.length > 0){
             var err = {
                 code: 401,
@@ -52,22 +55,35 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
             throw err
         }
 
+        console.log("4")
         var newSenha = await bcrypt.hashSync(req.newUser.senha, 10)
+        console.log("5")
         var newResposta = await bcrypt.hashSyc(req.body.resposta, 10)
 
+        console.log("6")
         req.newUser.senha = newSenha
+        console.log("7")
         req.newUser.resposta = newResposta
 
+        console.log("8")
         if(req.newUser.cpf.slice(-1).match(/[a-zA-Z]/)){
+            console.log("9")
             req.newUser.cpf = req.newUser.cpf.slice(0,-1).replace(/\D/g, "") + req.newUser.cpf.slice(-1)
+            console.log("10")
         }else{
+            console.log("11")
             req.newUser.cpf = req.newUser.cpf.replace(/\D/g, "")
+            console.log("1")
         }
 
+        console.log("12")
         var newFisico = await new Fisicos(req.newUser).save()
+        console.log("13")
         req.newUser.fisico = newFisico._id
+        console.log("14")
         var newUser = await Usuarios(req.newUser).save()
 
+        console.log("15")
         console.log("novo usuario cadastrado")
 
         res.status(200).send({
@@ -79,7 +95,7 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
         try{
             if (newFisico) await Fisicos.deleteOne({_id: newFisico._id})
             if (newUser) await Usuarios.deleteOne({_id: newUser._id})
-        }catch(e){}
+        }catch(err){}
 
         console.log("erro ao cadastrar usuário:: " + e.msg || e)
 

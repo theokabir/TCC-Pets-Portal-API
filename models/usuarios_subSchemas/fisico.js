@@ -8,7 +8,7 @@ const fisicoSchema = new Schema({
     },
 
     cpf: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },

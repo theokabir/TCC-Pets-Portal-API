@@ -58,6 +58,12 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
         req.newUser.senha = newSenha
         req.newUser.resposta = newResposta
 
+        if(req.newUser.cpf.slice(-1).match(/[a-zA-Z]/)){
+            req.newUser.cpf = req.newUser.cpf.slice(0,-1).replace(/\D/g, "") + req.newUser.cpf.slice(-1)
+        }else{
+            req.newUser.cpf = req.newUser.cpf.replace(/\D/g, "")
+        }
+
         var newFisico = await new Fisicos(req.newUser).save()
         req.newUser.fisico = newFisico._id
         var newUser = await Usuarios(req.newUser).save()

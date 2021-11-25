@@ -37,8 +37,7 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
         var other = await Usuarios.find({
             $or: [
                 {email: req.newUser.email},
-                {tel1: req.newUser.tel1},
-                {tel2: req.newUser.tel2}
+                {tel1: req.newUser.tel1}
             ]
         })
         var otherFisicos = await Fisicos.find({cpf: req.newUser.cpf})

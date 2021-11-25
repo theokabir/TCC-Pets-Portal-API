@@ -58,6 +58,7 @@ router.post('/', authToken.obrigatorio, async (req, res) => {
     })
     
 
+
     var ongs = ongsRes.filter(ong => {
       console.log(ong)
       if(!ong.ong) return false
@@ -96,6 +97,9 @@ router.post('/validate', authToken.obrigatorio, async (req, res) => {
       }
       throw err
     }
+
+
+    console.log(req.body)
 
     var user = await Usuarios.findOne({_id: req.body.ong, tipo: "ong"})
     var ong = await Ongs.findOne({_id: user.ong})

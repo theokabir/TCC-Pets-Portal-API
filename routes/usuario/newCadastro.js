@@ -26,7 +26,7 @@ const verifPessoaFisica = require('./../../middlewares/cadastro/verifPessoaFisic
 const verifOng = require('./../../middlewares/cadastro/verifOng')
 
 router.post('/', (req, res)=>{
-    res.sendd({msg: "ok"})
+    res.send({msg: "ok"})
 })
 
 //rotas
@@ -79,9 +79,11 @@ router.post("/pessoaFisica",verifPessoaFisica, async (req, res)=>{
         try{
             if (newFisico) await Fisicos.deleteOne({_id: newFisico._id})
             if (newUser) await Usuarios.deleteOne({_id: newUser._id})
-        }catch(err){}
+        }catch(err){
+            console.log("erro ao deletar dentro do erro")
+        }
 
-        console.log("erro ao cadastrar usuário:: " + e.msg || e)
+        console.log("erro ao cadastrar usuário::::::::::: " + e.msg || e)
 
         res.status(e.code || 500).send({
             msg: "erro ao cadastrar usuario"
@@ -97,31 +99,15 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng, async (req
 
     req.newUser.estadoSocial = req.newFile
     try{
-        var other = await Usuarios.find({
-            $or: [
-                {email: req.newUser.email},
-                {tel1: req.newUser.tel1},
-                {tel2: req.newUser.tel2}
-            ]
-        })
-
-        if (other.length > 0){
-            var err = {
-                code: 401,
-                msg: "dados repitidos"
-            }
-
-            throw err
-        }
-
         var newSenha = await bcrypt.hashSync(req.newUser.senha, 10)
-        var newResposta = await bcrypt.hashSyc(req.body.resposta, 10)
+        var newResposta = await bcrypt.hashSync(req.body.resposta, 10)
 
         req.newUser.senha = newSenha
         req.newUser.resposta = newResposta
 
         var newOng = await new Ongs(req.newUser).save()
         req.newUser.ong = newOng._id
+        req.newUser.tipo = "ong"
         var newUser = await Usuarios(req.newUser).save()
 
         console.log("novo usuario cadastrado")
@@ -137,7 +123,7 @@ router.post('/ong', uploadOng.single('social'), gcs.upload, verifOng, async (req
             if (newUser) await Usuarios.deleteOne({_id: newUser._id})
         }catch(e){}
 
-        console.log("erro ao cadastrar usuário:: " + e.msg || e)
+        console.log("erro ao cadastrar usuário:::::::: " + e.msg || e)
 
         res.status(e.code || 500).send({
             msg: "erro ao cadastrar usuario"

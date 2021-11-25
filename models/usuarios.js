@@ -29,8 +29,7 @@ const usuarioSchema = new Schema({
 
     tel1: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
 
     ddd1: {
@@ -39,12 +38,11 @@ const usuarioSchema = new Schema({
     },
 
     tel2: {
-        type: Number,
-        required: false
+        type: Number
     },
 
     ddd2: {
-        type: Number,
+        type: Number
     },
 
     imagem: {

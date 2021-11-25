@@ -59,6 +59,7 @@ exports.delete = async (foto) => {
     await bucket.file(foto).delete()
     console.log(`${foto} deletada`)
   }catch(e){
+    console.log("ppippipipopopop")
     console.log("foto não existe")
   }
 
